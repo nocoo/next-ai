@@ -1,4 +1,3 @@
-import "server-only";
 import { type ModelMessage, generateText, streamText } from "ai";
 import { resolveAiConfig } from "../core/config";
 import type { AiSettingsInput } from "../core/types";

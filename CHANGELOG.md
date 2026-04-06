@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.2] - 2026-04-06
+
+### Fixed
+
+- Remove `server-only` import from `helpers.ts` (was missed in 0.1.1)
+
 ## [0.1.1] - 2026-04-06
 
 ### Added
