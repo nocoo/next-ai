@@ -5,37 +5,49 @@
   Configure · Connect · Create
 </p>
 
-![npm](https://img.shields.io/npm/v/@nocoo/next-ai)
-![license](https://img.shields.io/npm/l/@nocoo/next-ai)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+<p align="center">
+  <a href="https://www.npmjs.com/package/@nocoo/next-ai"><img src="https://img.shields.io/npm/v/@nocoo/next-ai" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/@nocoo/next-ai"><img src="https://img.shields.io/npm/dm/@nocoo/next-ai" alt="npm downloads"></a>
+  <a href="https://github.com/nicnocquee/next-ai/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/@nocoo/next-ai" alt="license"></a>
+  <img src="https://img.shields.io/badge/TypeScript-5.0-blue" alt="TypeScript">
+</p>
 
 ---
 
-## What is this?
+## Overview
 
-A unified AI provider integration library for Next.js that supports multiple LLM providers (Anthropic, OpenAI-compatible endpoints) with React components for configuration UI. Built on top of Vercel AI SDK.
+A unified AI provider integration library for Next.js that supports multiple LLM providers (Anthropic, OpenAI-compatible endpoints) with React components for configuration UI. Built on top of [Vercel AI SDK](https://sdk.vercel.ai/).
 
 ## Features
 
-**Multi-Provider Support** — Built-in support for Anthropic, MiniMax, GLM (Zhipu), AIHubMix, plus custom providers
-
-**React Components** — Ready-to-use settings panel with provider selection, model picker, and API key management
-
-**Storage Adapter Pattern** — Bring your own storage (API routes, database) via simple interface
-
-**Server/Client Separation** — Sensitive AI client creation runs server-side only with `server-only` protection
+- **Multi-Provider Support** — Built-in support for Anthropic, MiniMax, GLM (Zhipu), AIHubMix, plus custom URL-based providers
+- **React Components** — Ready-to-use settings panel with provider selection, model picker, and API key management
+- **Storage Adapter Pattern** — Bring your own storage (API routes, database) via simple interface
+- **Server/Client Separation** — Sensitive AI client creation runs server-side only with `server-only` protection
+- **Prompt Templates** — Multi-section prompt system with Mustache-style variable substitution
+- **Type-Safe** — Full TypeScript support with strict types
 
 ## Installation
 
 ```bash
 npm install @nocoo/next-ai
 # or
+pnpm add @nocoo/next-ai
+# or
 bun add @nocoo/next-ai
+```
+
+### Peer Dependencies
+
+```bash
+npm install react react-dom tailwindcss
 ```
 
 ## Quick Start
 
 ### 1. Implement Storage Adapter
+
+The adapter connects the UI to your backend storage. API keys should be stored server-side.
 
 ```typescript
 // lib/ai-adapter.ts
@@ -55,7 +67,7 @@ export const aiAdapter: AiStorageAdapter = {
     return res.json();
   },
   async testConnection(config: AiTestConfig) {
-    // config.apiKey may be undefined - server should use stored key in that case
+    // config.apiKey may be undefined - server should use stored key
     const res = await fetch("/api/settings/ai/test", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -78,7 +90,10 @@ import { aiAdapter } from "@/lib/ai-adapter";
 export default function AiSettingsPage() {
   return (
     <AiConfigProvider adapter={aiAdapter}>
-      <AiSettingsPanel />
+      <AiSettingsPanel 
+        onSaveSuccess={() => console.log("Settings saved!")}
+        onTestSuccess={(result) => console.log("Test passed:", result)}
+      />
     </AiConfigProvider>
   );
 }
@@ -92,7 +107,7 @@ import { resolveAiConfig, createAiModel } from "@nocoo/next-ai/server";
 import { generateText } from "ai";
 
 export async function POST(req: Request) {
-  const settings = await loadUserSettings();
+  const settings = await loadUserSettings(); // Your storage logic
   const config = resolveAiConfig(settings);
   const model = createAiModel(config);
   
@@ -105,7 +120,9 @@ export async function POST(req: Request) {
 }
 ```
 
-### 4. Test Connection Route (using stored API key)
+### 4. Test Connection Route
+
+Handle test connection requests, supporting both new API keys and stored keys:
 
 ```typescript
 // app/api/settings/ai/test/route.ts
@@ -125,7 +142,7 @@ export async function POST(req: Request) {
     });
   }
 
-  // Merge with stored apiKey if not provided
+  // Merge with stored apiKey if not provided in request
   const storedSettings = await loadUserSettings();
   const mergedConfig = {
     ...testConfig,
@@ -156,28 +173,31 @@ export async function POST(req: Request) {
 }
 ```
 
-## Exports
+## API Reference
 
-| Entry Point | Import Path | Contents |
-|-------------|-------------|----------|
-| Main | `@nocoo/next-ai` | Types, constants, utilities |
-| Server | `@nocoo/next-ai/server` | AI client creation (server-only) |
-| React | `@nocoo/next-ai/react` | Components, hooks, context |
+### Entry Points
 
-## Built-in Providers
+| Import Path | Contents | Environment |
+|-------------|----------|-------------|
+| `@nocoo/next-ai` | Types, constants, registry, utilities | Universal |
+| `@nocoo/next-ai/server` | AI client, helpers, config resolvers | Server-only |
+| `@nocoo/next-ai/react` | Components, hooks, context | Client |
 
-| Provider | SDK Type | Default Model |
-|----------|----------|---------------|
-| Anthropic | anthropic | claude-sonnet-4-20250514 |
-| MiniMax | anthropic | MiniMax-M2.5 |
-| GLM (Zhipu) | anthropic | glm-5 |
-| AIHubMix | openai | gpt-4o-mini |
-| Custom | configurable | configurable |
+### Built-in Providers
 
-## Custom Provider Registration
+| Provider | ID | SDK Type | Default Model |
+|----------|-----|----------|---------------|
+| Anthropic | `anthropic` | anthropic | claude-sonnet-4-20250514 |
+| MiniMax | `minimax` | anthropic | MiniMax-M2.5 |
+| GLM (Zhipu) | `glm` | anthropic | glm-5 |
+| AIHubMix | `aihubmix` | openai | gpt-4o-mini |
+| Custom | `custom` | configurable | configurable |
+
+### Custom Provider Registration
 
 ```typescript
 import { AiProviderRegistry } from "@nocoo/next-ai";
+import { AiConfigProvider } from "@nocoo/next-ai/react";
 
 const customRegistry = new AiProviderRegistry({
   deepseek: {
@@ -189,11 +209,16 @@ const customRegistry = new AiProviderRegistry({
     defaultModel: "deepseek-chat",
   },
 });
+
+// Use with provider
+<AiConfigProvider adapter={adapter} registry={customRegistry}>
+  <AiSettingsPanel />
+</AiConfigProvider>
 ```
 
-## Prompt Templates
+### Prompt Templates
 
-Register and build multi-section prompts with variable substitution:
+Multi-section prompts with Mustache-style variable substitution:
 
 ```typescript
 import { PromptTemplateRegistry } from "@nocoo/next-ai";
@@ -212,25 +237,35 @@ templates.register({
   ],
 });
 
+// Build prompt with variables
 const prompt = templates.build("daily-analysis", { date: "2024-01-15" });
 // => "You are a productivity analyst.\n\nAnalyze data for 2024-01-15."
+
+// Override specific sections
+const customPrompt = templates.build(
+  "daily-analysis",
+  { date: "2024-01-15" },
+  { role: "You are an expert analyst with 10 years experience." }
+);
 ```
 
-## Server Helpers
+### Server Helpers
 
 High-level AI helpers for common use cases:
 
 ```typescript
-import { aiComplete, aiChat, aiStream } from "@nocoo/next-ai/server";
+import { aiComplete, aiChat, aiStream, aiCompleteWithRetry } from "@nocoo/next-ai/server";
 
 // Simple completion
 const result = await aiComplete("Your prompt", {
   settings: userSettings,
   maxOutputTokens: 1000,
+  temperature: 0.7,
 });
+console.log(result.text, result.usage, result.durationMs);
 
 // Multi-turn chat
-const result = await aiChat([
+const chatResult = await aiChat([
   { role: "user", content: "Hello" },
   { role: "assistant", content: "Hi!" },
   { role: "user", content: "How are you?" },
@@ -238,17 +273,127 @@ const result = await aiChat([
 
 // Streaming
 const stream = await aiStream("Your prompt", { settings: userSettings });
+
+// With automatic retry
+const retryResult = await aiCompleteWithRetry("Your prompt", {
+  settings: userSettings,
+  retries: 3,
+  retryDelay: 1000,
+});
 ```
 
-## CSS Variables
+### React Components
 
-Components use Basalt design system CSS variables. Generate them with:
+#### AiSettingsPanel
+
+Full settings panel with all configuration options:
+
+```tsx
+<AiSettingsPanel
+  className="my-custom-class"
+  onSaveSuccess={() => {}}
+  onTestSuccess={(result) => {}}
+  onTestError={(error) => {}}
+  hideTestButton={false}
+/>
+```
+
+#### Individual Components
+
+```tsx
+import {
+  ProviderSelect,
+  ModelSelect,
+  ApiKeyInput,
+  PromptTemplateSelector,
+} from "@nocoo/next-ai/react";
+
+// Provider dropdown
+<ProviderSelect value={provider} onChange={setProvider} />
+
+// Model dropdown with custom model support
+<ModelSelect provider={provider} value={model} onChange={setModel} />
+
+// Masked API key input
+<ApiKeyInput value={apiKey} onChange={setApiKey} hasStoredKey={true} />
+```
+
+### Hooks
+
+```typescript
+import { useAiSettings, useAiTest, useProviderRegistry } from "@nocoo/next-ai/react";
+
+// Settings management
+const { settings, loading, saving, save, reload } = useAiSettings();
+
+// Connection testing
+const { test, testing, result, error } = useAiTest();
+
+// Provider registry access
+const registry = useProviderRegistry();
+const providers = registry.getAll();
+```
+
+## Styling
+
+Components use CSS variables following the Basalt design system. Add these to your global CSS:
+
+```css
+:root {
+  --background: 220 14% 96%;
+  --foreground: 220 9% 12%;
+  --card: 220 14% 98%;
+  --card-foreground: 220 9% 12%;
+  --primary: 220 90% 56%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 14% 92%;
+  --secondary-foreground: 220 9% 12%;
+  --muted: 220 14% 92%;
+  --muted-foreground: 220 9% 46%;
+  --border: 220 14% 88%;
+  --input: 220 14% 96%;
+  --destructive: 0 84% 60%;
+}
+
+.dark {
+  --background: 220 14% 10%;
+  --foreground: 220 9% 94%;
+  /* ... dark mode values */
+}
+```
+
+Or generate programmatically:
 
 ```typescript
 import { generateCssVariables } from "@nocoo/next-ai/react";
 
 const lightVars = generateCssVariables("light");
 const darkVars = generateCssVariables("dark");
+```
+
+## Security
+
+- **API keys must be stored server-side** (database, environment variables)
+- Client UI only handles input and displays masks
+- The `@nocoo/next-ai/server` entry uses `server-only` to prevent client imports
+- Never expose real API keys to the client
+
+## TypeScript
+
+All types are exported from the main entry:
+
+```typescript
+import type {
+  AiConfig,
+  AiSettingsInput,
+  AiSettingsReadonly,
+  AiTestConfig,
+  AiTestResult,
+  AiStorageAdapter,
+  AiProviderInfo,
+  AiConfigError,
+  SdkType,
+} from "@nocoo/next-ai";
 ```
 
 ## License
