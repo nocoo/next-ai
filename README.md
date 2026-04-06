@@ -135,6 +135,66 @@ const customRegistry = new AiProviderRegistry({
 });
 ```
 
+## Prompt Templates
+
+Register and build multi-section prompts with variable substitution:
+
+```typescript
+import { PromptTemplateRegistry } from "@nocoo/next-ai";
+
+const templates = new PromptTemplateRegistry();
+
+templates.register({
+  id: "daily-analysis",
+  name: "Daily Analysis",
+  sections: [
+    { id: "role", label: "Role", content: "You are a productivity analyst." },
+    { id: "task", label: "Task", content: "Analyze data for {{date}}." },
+  ],
+  variables: [
+    { key: "date", label: "Date", required: true },
+  ],
+});
+
+const prompt = templates.build("daily-analysis", { date: "2024-01-15" });
+// => "You are a productivity analyst.\n\nAnalyze data for 2024-01-15."
+```
+
+## Server Helpers
+
+High-level AI helpers for common use cases:
+
+```typescript
+import { aiComplete, aiChat, aiStream } from "@nocoo/next-ai/server";
+
+// Simple completion
+const result = await aiComplete("Your prompt", {
+  settings: userSettings,
+  maxOutputTokens: 1000,
+});
+
+// Multi-turn chat
+const result = await aiChat([
+  { role: "user", content: "Hello" },
+  { role: "assistant", content: "Hi!" },
+  { role: "user", content: "How are you?" },
+], { settings: userSettings });
+
+// Streaming
+const stream = await aiStream("Your prompt", { settings: userSettings });
+```
+
+## CSS Variables
+
+Components use Basalt design system CSS variables. Generate them with:
+
+```typescript
+import { generateCssVariables } from "@nocoo/next-ai/react";
+
+const lightVars = generateCssVariables("light");
+const darkVars = generateCssVariables("dark");
+```
+
 ## License
 
 [MIT](LICENSE) © 2026 nocoo

@@ -1,6 +1,3 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
 # L2: Integration tests (if API key available)
 echo "🔗 Running integration tests..."
 bun test __tests__/integration || true  # Allow skip

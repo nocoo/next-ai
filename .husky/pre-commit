@@ -1,6 +1,3 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
 # G1: Static analysis
 echo "🔍 Running static analysis..."
 bun run lint || exit 1
