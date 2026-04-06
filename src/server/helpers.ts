@@ -105,6 +105,12 @@ export async function aiCompleteWithRetry(
   options: AiHelperOptions & { retries?: number; retryDelay?: number },
 ): Promise<AiCompletionResult> {
   const { retries = 3, retryDelay = 1000, ...helperOptions } = options;
+
+  // Validate retries parameter
+  if (retries < 1) {
+    throw new Error("retries must be at least 1");
+  }
+
   let lastError: Error | null = null;
 
   for (let i = 0; i < retries; i++) {

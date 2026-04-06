@@ -80,31 +80,49 @@ export function AiSettingsPanel({
     !isCustomProvider || (baseURL.trim() !== "" && sdkType !== "");
   const canSubmit = provider && model && isCustomProviderValid;
 
+  // Error state for save operations
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   const handleSave = async () => {
-    await save({
-      provider,
-      model,
-      apiKey: apiKey || undefined,
-      baseURL: isCustomProvider ? baseURL : undefined,
-      sdkType: isCustomProvider ? (sdkType as SdkType) : undefined,
-    });
-    setApiKey(""); // Clear apiKey field after save
-    onSaveSuccess?.();
+    setSaveError(null);
+    try {
+      await save({
+        provider,
+        model,
+        apiKey: apiKey || undefined,
+        baseURL: isCustomProvider ? baseURL : undefined,
+        sdkType: isCustomProvider ? (sdkType as SdkType) : undefined,
+      });
+      setApiKey(""); // Clear apiKey field after save
+      onSaveSuccess?.();
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to save settings";
+      setSaveError(message);
+    }
   };
 
   const handleTest = async () => {
-    const testResult = await test({
-      provider,
-      apiKey: apiKey || undefined, // If empty, server should use stored key
-      model,
-      baseURL: isCustomProvider ? baseURL : providerInfo?.baseURL,
-      sdkType: isCustomProvider ? (sdkType as SdkType) : providerInfo?.sdkType,
-    });
+    try {
+      const testResult = await test({
+        provider,
+        apiKey: apiKey || undefined, // If empty, server should use stored key
+        model,
+        baseURL: isCustomProvider ? baseURL : providerInfo?.baseURL,
+        sdkType: isCustomProvider
+          ? (sdkType as SdkType)
+          : providerInfo?.sdkType,
+      });
 
-    if (testResult.success) {
-      onTestSuccess?.(testResult);
-    } else {
-      onTestError?.(testResult.error ?? "Test failed");
+      if (testResult.success) {
+        onTestSuccess?.(testResult);
+      } else {
+        onTestError?.(testResult.error ?? "Test failed");
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Connection test failed";
+      onTestError?.(message);
     }
   };
 
@@ -303,6 +321,18 @@ export function AiSettingsPanel({
             ) : (
               <>✗ {result.error ?? "Connection failed"}</>
             )}
+          </div>
+        )}
+
+        {/* Save Error */}
+        {saveError && (
+          <div
+            className={cn(
+              "mt-4 p-3 rounded-lg text-sm",
+              "bg-[hsl(var(--destructive)/0.1)] text-[hsl(var(--destructive))]",
+            )}
+          >
+            ✗ {saveError}
           </div>
         )}
       </div>

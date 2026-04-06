@@ -101,4 +101,22 @@ describe("aiCompleteWithRetry", () => {
 
     expect(result.text).toBe("mocked response");
   });
+
+  test("throws error when retries is less than 1", async () => {
+    await expect(
+      aiCompleteWithRetry("Hello", {
+        settings: TEST_SETTINGS,
+        retries: 0,
+      }),
+    ).rejects.toThrow("retries must be at least 1");
+  });
+
+  test("throws error when retries is negative", async () => {
+    await expect(
+      aiCompleteWithRetry("Hello", {
+        settings: TEST_SETTINGS,
+        retries: -1,
+      }),
+    ).rejects.toThrow("retries must be at least 1");
+  });
 });
