@@ -1,7 +1,7 @@
 # @nocoo/next-ai
 
 <p align="center">
-  <strong>Multi-provider AI integration for Next.js</strong><br>
+  <strong>Multi-provider AI integration for Next.js and Vite</strong><br>
   Configure · Connect · Create
 </p>
 
@@ -16,14 +16,15 @@
 
 ## Overview
 
-A unified AI provider integration library for Next.js that supports multiple LLM providers (Anthropic, OpenAI-compatible endpoints) with React components for configuration UI. Built on top of [Vercel AI SDK](https://sdk.vercel.ai/).
+A unified AI provider integration library that supports multiple LLM providers (Anthropic, OpenAI-compatible endpoints) with React components for configuration UI. Works with **Next.js**, **Vite**, **vinext**, and other frameworks. Built on top of [Vercel AI SDK](https://sdk.vercel.ai/).
 
 ## Features
 
 - **Multi-Provider Support** — Built-in support for Anthropic, MiniMax, GLM (Zhipu), AIHubMix, plus custom URL-based providers
+- **Framework Agnostic** — Works with Next.js, Vite, vinext, and other React frameworks
 - **React Components** — Ready-to-use settings panel with provider selection, model picker, and API key management
 - **Storage Adapter Pattern** — Bring your own storage (API routes, database) via simple interface
-- **Server/Client Separation** — Sensitive AI client creation runs server-side only with `server-only` protection
+- **Server/Client Separation** — Sensitive AI client creation runs server-side only
 - **Prompt Templates** — Multi-section prompt system with Mustache-style variable substitution
 - **Type-Safe** — Full TypeScript support with strict types
 
@@ -180,11 +181,29 @@ export async function POST(req: Request) {
 | Import Path | Contents | Environment |
 |-------------|----------|-------------|
 | `@nocoo/next-ai` | Types, constants, registry, utilities | Universal |
-| `@nocoo/next-ai/server` | AI client, helpers, config resolvers | Server (Vite/vinext compatible) |
+| `@nocoo/next-ai/server` | AI client, helpers, config resolvers | Server (universal) |
 | `@nocoo/next-ai/server-next` | Same as `/server` with `server-only` guard | Server (Next.js only) |
 | `@nocoo/next-ai/react` | Components, hooks, context | Client |
 
-> **Note**: Use `/server-next` in Next.js App Router projects for strict client-side import prevention. Use `/server` for Vite, vinext, or other frameworks.
+### Choosing a Server Entry Point
+
+**Use `/server`** (recommended for most projects):
+- Works with **Vite**, **vinext**, and other non-Next.js frameworks
+- Works with **Next.js** (but without client-import protection)
+- No additional dependencies required
+
+**Use `/server-next`** (strict mode for Next.js):
+- Adds `server-only` protection to prevent accidental client-side imports
+- Only works in **Next.js App Router** projects
+- Requires `server-only` as a peer dependency: `npm install server-only`
+
+```typescript
+// For Vite, vinext, or universal compatibility:
+import { resolveAiConfig, createAiModel } from "@nocoo/next-ai/server";
+
+// For Next.js App Router with strict protection:
+import { resolveAiConfig, createAiModel } from "@nocoo/next-ai/server-next";
+```
 
 ### Built-in Providers
 
@@ -378,7 +397,8 @@ const darkVars = generateCssVariables("dark");
 
 - **API keys must be stored server-side** (database, environment variables)
 - Client UI only handles input and displays masks
-- The `@nocoo/next-ai/server` entry uses `server-only` to prevent client imports
+- For Next.js: use `@nocoo/next-ai/server-next` to prevent accidental client imports
+- For other frameworks: ensure server modules are only imported in server-side code
 - Never expose real API keys to the client
 
 ## TypeScript
