@@ -75,6 +75,11 @@ export function AiSettingsPanel({
   const isCustomProvider = provider === "custom";
   const providerInfo = registry.get(provider);
 
+  // Form validation: custom provider requires baseURL and sdkType
+  const isCustomProviderValid =
+    !isCustomProvider || (baseURL.trim() !== "" && sdkType !== "");
+  const canSubmit = provider && model && isCustomProviderValid;
+
   const handleSave = async () => {
     await save({
       provider,
@@ -249,7 +254,7 @@ export function AiSettingsPanel({
             <button
               type="button"
               onClick={handleTest}
-              disabled={testing || saving || !provider || !model}
+              disabled={testing || saving || !canSubmit}
               className={cn(
                 "inline-flex items-center justify-center rounded-lg px-4 py-2",
                 "text-sm font-medium transition-colors",
@@ -265,7 +270,7 @@ export function AiSettingsPanel({
           <button
             type="button"
             onClick={handleSave}
-            disabled={saving || !provider || !model}
+            disabled={saving || !canSubmit}
             className={cn(
               "inline-flex items-center justify-center rounded-lg px-4 py-2",
               "text-sm font-medium transition-colors",
