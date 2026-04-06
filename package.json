@@ -1,6 +1,6 @@
 {
   "name": "@nocoo/next-ai",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Multi-provider AI integration for Next.js",
   "type": "module",
   "exports": {

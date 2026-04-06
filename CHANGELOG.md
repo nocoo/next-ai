@@ -2,18 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.2] - 2026-04-06
+## [0.2.0] - 2026-04-06
+
+### Added
+
+- **Dual Server Entry Points** — `/server` for universal compatibility, `/server-next` for Next.js strict mode
+- **Framework Agnostic** — Full support for Vite, vinext, and other non-Next.js frameworks
 
 ### Fixed
 
 - Remove `server-only` import from `helpers.ts` (was missed in 0.1.1)
-
-## [0.1.1] - 2026-04-06
-
-### Added
-
-- **Vite/vinext Compatibility** — New `/server` entry without `server-only` for Vite-based projects
-- **Next.js Strict Mode** — New `/server-next` entry with `server-only` guard for Next.js App Router
 
 ### Changed
 
