@@ -1,0 +1,11 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# G1: Static analysis
+echo "🔍 Running static analysis..."
+bun run lint || exit 1
+bun run typecheck || exit 1
+
+# L1: Unit tests + coverage
+echo "🧪 Running unit tests..."
+bun test __tests__/unit --coverage || exit 1

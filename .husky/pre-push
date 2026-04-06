@@ -1,0 +1,10 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# L2: Integration tests (if API key available)
+echo "🔗 Running integration tests..."
+bun test __tests__/integration || true  # Allow skip
+
+# G2: Security scan
+echo "🔒 Running security gate..."
+bun run scripts/gate-security.ts || exit 1

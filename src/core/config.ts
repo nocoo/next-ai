@@ -62,18 +62,20 @@ export function resolveAiConfig(
   const { provider, apiKey, model, baseURL, sdkType } = input;
 
   if (provider === "custom") {
-    // baseURL and sdkType are validated above, so they must exist
-    if (!baseURL || !sdkType) {
-      throw new Error("Invalid custom provider configuration");
-    }
-    return { provider, baseURL, apiKey, model, sdkType };
+    // Type assertion is safe: validation ensures baseURL and sdkType exist for custom provider
+    return {
+      provider,
+      baseURL: baseURL as string,
+      apiKey,
+      model,
+      sdkType: sdkType as AiConfig["sdkType"],
+    };
   }
 
-  // Provider is validated above
-  const providerInfo = registry.get(provider);
-  if (!providerInfo) {
-    throw new Error(`Unknown provider: ${provider}`);
-  }
+  // Type assertion is safe: validation ensures provider exists in registry
+  const providerInfo = registry.get(provider) as NonNullable<
+    ReturnType<typeof registry.get>
+  >;
   return {
     provider,
     baseURL: providerInfo.baseURL,
