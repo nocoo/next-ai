@@ -109,14 +109,23 @@ export async function POST(req: Request) {
 
 ```typescript
 // app/api/settings/ai/test/route.ts
-import { resolveAiConfig, createAiModel } from "@nocoo/next-ai/server";
+import { validateTestConfig, resolveAiConfig, createAiModel } from "@nocoo/next-ai/server";
 import { generateText } from "ai";
 import type { AiTestConfig } from "@nocoo/next-ai";
 
 export async function POST(req: Request) {
   const testConfig = (await req.json()) as AiTestConfig;
   
-  // If apiKey is not provided in request, use stored key
+  // Validate test config (does not require apiKey)
+  const errors = validateTestConfig(testConfig);
+  if (errors.length > 0) {
+    return Response.json({
+      success: false,
+      error: errors.map(e => e.message).join("; "),
+    });
+  }
+
+  // Merge with stored apiKey if not provided
   const storedSettings = await loadUserSettings();
   const mergedConfig = {
     ...testConfig,
@@ -124,7 +133,6 @@ export async function POST(req: Request) {
   };
 
   try {
-    // Use allowMissingApiKey: false since we've merged the key above
     const resolved = resolveAiConfig(mergedConfig);
     const model = createAiModel(resolved);
 

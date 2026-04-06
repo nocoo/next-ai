@@ -31,9 +31,9 @@ export { PromptTemplateRegistry } from "./core/templates";
 export {
   resolveAiConfig,
   validateAiConfig,
+  validateTestConfig,
   isValidProvider,
 } from "./core/config";
-export type { ValidateOptions } from "./core/config";
 
 // Utils
 export {

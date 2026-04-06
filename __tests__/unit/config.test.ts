@@ -3,6 +3,7 @@ import {
   isValidProvider,
   resolveAiConfig,
   validateAiConfig,
+  validateTestConfig,
 } from "../../src/core/config";
 import { AiProviderRegistry } from "../../src/core/registry";
 
@@ -135,40 +136,75 @@ describe("validateAiConfig", () => {
     );
     expect(errors).toEqual([]);
   });
+});
 
-  describe("allowMissingApiKey option", () => {
-    test("skips apiKey validation when allowMissingApiKey is true", () => {
-      const errors = validateAiConfig(
-        {
-          provider: "anthropic",
-          apiKey: "",
-          model: "claude-sonnet-4-20250514",
-        },
-        undefined,
-        { allowMissingApiKey: true },
-      );
-      expect(errors).toEqual([]);
+describe("validateTestConfig", () => {
+  test("does not require apiKey", () => {
+    const errors = validateTestConfig({
+      provider: "anthropic",
+      model: "claude-sonnet-4-20250514",
+      // No apiKey - this is valid for test config
     });
+    expect(errors).toEqual([]);
+  });
 
-    test("still validates other fields when allowMissingApiKey is true", () => {
-      const errors = validateAiConfig(
-        {
-          provider: "",
-          apiKey: "",
-          model: "claude-sonnet-4-20250514",
-        },
-        undefined,
-        { allowMissingApiKey: true },
-      );
-      expect(errors).toContainEqual({
-        field: "provider",
-        message: "Provider is required",
-      });
-      expect(errors).not.toContainEqual({
-        field: "apiKey",
-        message: "API key is required",
-      });
+  test("requires provider", () => {
+    const errors = validateTestConfig({
+      provider: "",
+      model: "claude-sonnet-4-20250514",
     });
+    expect(errors).toContainEqual({
+      field: "provider",
+      message: "Provider is required",
+    });
+  });
+
+  test("requires model", () => {
+    const errors = validateTestConfig({
+      provider: "anthropic",
+      model: "",
+    });
+    expect(errors).toContainEqual({
+      field: "model",
+      message: "Model is required",
+    });
+  });
+
+  test("validates unknown provider", () => {
+    const errors = validateTestConfig({
+      provider: "unknown",
+      model: "some-model",
+    });
+    expect(errors).toContainEqual({
+      field: "provider",
+      message: "Unknown provider: unknown",
+    });
+  });
+
+  test("validates custom provider fields", () => {
+    const errors = validateTestConfig({
+      provider: "custom",
+      model: "my-model",
+      // Missing baseURL and sdkType
+    });
+    expect(errors).toContainEqual({
+      field: "baseURL",
+      message: "Base URL is required for custom provider",
+    });
+    expect(errors).toContainEqual({
+      field: "sdkType",
+      message: "SDK type is required for custom provider",
+    });
+  });
+
+  test("returns empty array for valid custom provider config", () => {
+    const errors = validateTestConfig({
+      provider: "custom",
+      model: "my-model",
+      baseURL: "https://api.example.com",
+      sdkType: "openai",
+    });
+    expect(errors).toEqual([]);
   });
 });
 
