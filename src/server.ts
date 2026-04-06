@@ -6,7 +6,11 @@ export {
   aiCompleteWithRetry,
   aiStream,
 } from "./server/helpers";
-export { resolveAiConfig, validateAiConfig } from "./core/config";
+export {
+  resolveAiConfig,
+  validateAiConfig,
+  validateTestConfig,
+} from "./core/config";
 export { expandTemplate } from "./core/utils";
 export { PromptTemplateRegistry } from "./core/templates";
 
