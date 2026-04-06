@@ -36,8 +36,11 @@ export function ModelSelect({
   const models = providerInfo?.models ?? [];
   const isCustomProvider = provider === "custom";
 
-  // 如果是 custom provider 或手动选择了 custom，显示输入框
-  if (isCustomProvider || isCustom) {
+  // Check if current value is a custom model (not in preset list)
+  const isValueCustomModel = value && !models.includes(value);
+
+  // Show text input if: custom provider, user chose custom, or value is a custom model
+  if (isCustomProvider || isCustom || isValueCustomModel) {
     return (
       <div className={cn("flex gap-2", className)}>
         <input
