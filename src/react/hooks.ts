@@ -15,15 +15,25 @@ export function useAiTest() {
   const { testConnection } = useAiConfig();
   const [testing, setTesting] = useState(false);
   const [result, setResult] = useState<AiTestResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const test = useCallback(
     async (config: AiTestConfig) => {
       setTesting(true);
       setResult(null);
+      setError(null);
       try {
         const res = await testConnection(config);
         setResult(res);
         return res;
+      } catch (e) {
+        const message =
+          e instanceof Error ? e.message : "Connection test failed";
+        setError(message);
+        // Return a failed result so callers can still handle it
+        const failedResult: AiTestResult = { success: false, error: message };
+        setResult(failedResult);
+        return failedResult;
       } finally {
         setTesting(false);
       }
@@ -31,7 +41,7 @@ export function useAiTest() {
     [testConnection],
   );
 
-  return { test, testing, result };
+  return { test, testing, result, error };
 }
 
 /** 获取 Provider 注册表 */

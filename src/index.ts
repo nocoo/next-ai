@@ -33,6 +33,7 @@ export {
   validateAiConfig,
   isValidProvider,
 } from "./core/config";
+export type { ValidateOptions } from "./core/config";
 
 // Utils
 export {

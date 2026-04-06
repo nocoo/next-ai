@@ -105,6 +105,49 @@ export async function POST(req: Request) {
 }
 ```
 
+### 4. Test Connection Route (using stored API key)
+
+```typescript
+// app/api/settings/ai/test/route.ts
+import { resolveAiConfig, createAiModel } from "@nocoo/next-ai/server";
+import { generateText } from "ai";
+import type { AiTestConfig } from "@nocoo/next-ai";
+
+export async function POST(req: Request) {
+  const testConfig = (await req.json()) as AiTestConfig;
+  
+  // If apiKey is not provided in request, use stored key
+  const storedSettings = await loadUserSettings();
+  const mergedConfig = {
+    ...testConfig,
+    apiKey: testConfig.apiKey || storedSettings.apiKey,
+  };
+
+  try {
+    // Use allowMissingApiKey: false since we've merged the key above
+    const resolved = resolveAiConfig(mergedConfig);
+    const model = createAiModel(resolved);
+
+    const { text } = await generateText({
+      model,
+      prompt: "Reply with exactly: OK",
+      maxOutputTokens: 10,
+    });
+
+    return Response.json({
+      success: text.includes("OK"),
+      model: resolved.model,
+      provider: resolved.provider,
+    });
+  } catch (error) {
+    return Response.json({
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+}
+```
+
 ## Exports
 
 | Entry Point | Import Path | Contents |

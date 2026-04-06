@@ -6,7 +6,7 @@ async function main() {
 
   // osv-scanner: dependency vulnerability scanning
   console.log("📦 Checking dependencies with osv-scanner...");
-  const osv = await $`osv-scanner --lockfile=bun.lockb`.quiet().nothrow();
+  const osv = await $`osv-scanner --lockfile=bun.lock`.quiet().nothrow();
   if (osv.exitCode !== 0) {
     console.error("❌ osv-scanner found vulnerabilities:");
     console.error(osv.stderr.toString());

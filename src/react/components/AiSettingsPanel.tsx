@@ -103,26 +103,19 @@ export function AiSettingsPanel({
   };
 
   const handleTest = async () => {
-    try {
-      const testResult = await test({
-        provider,
-        apiKey: apiKey || undefined, // If empty, server should use stored key
-        model,
-        baseURL: isCustomProvider ? baseURL : providerInfo?.baseURL,
-        sdkType: isCustomProvider
-          ? (sdkType as SdkType)
-          : providerInfo?.sdkType,
-      });
+    // useAiTest hook now handles errors internally and always returns a result
+    const testResult = await test({
+      provider,
+      apiKey: apiKey || undefined, // If empty, server should use stored key
+      model,
+      baseURL: isCustomProvider ? baseURL : providerInfo?.baseURL,
+      sdkType: isCustomProvider ? (sdkType as SdkType) : providerInfo?.sdkType,
+    });
 
-      if (testResult.success) {
-        onTestSuccess?.(testResult);
-      } else {
-        onTestError?.(testResult.error ?? "Test failed");
-      }
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Connection test failed";
-      onTestError?.(message);
+    if (testResult.success) {
+      onTestSuccess?.(testResult);
+    } else {
+      onTestError?.(testResult.error ?? "Test failed");
     }
   };
 

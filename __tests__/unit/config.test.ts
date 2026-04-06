@@ -135,6 +135,41 @@ describe("validateAiConfig", () => {
     );
     expect(errors).toEqual([]);
   });
+
+  describe("allowMissingApiKey option", () => {
+    test("skips apiKey validation when allowMissingApiKey is true", () => {
+      const errors = validateAiConfig(
+        {
+          provider: "anthropic",
+          apiKey: "",
+          model: "claude-sonnet-4-20250514",
+        },
+        undefined,
+        { allowMissingApiKey: true },
+      );
+      expect(errors).toEqual([]);
+    });
+
+    test("still validates other fields when allowMissingApiKey is true", () => {
+      const errors = validateAiConfig(
+        {
+          provider: "",
+          apiKey: "",
+          model: "claude-sonnet-4-20250514",
+        },
+        undefined,
+        { allowMissingApiKey: true },
+      );
+      expect(errors).toContainEqual({
+        field: "provider",
+        message: "Provider is required",
+      });
+      expect(errors).not.toContainEqual({
+        field: "apiKey",
+        message: "API key is required",
+      });
+    });
+  });
 });
 
 describe("resolveAiConfig", () => {

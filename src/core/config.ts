@@ -1,10 +1,16 @@
 import { type AiProviderRegistry, defaultRegistry } from "./registry";
 import type { AiConfig, AiConfigError, AiSettingsInput } from "./types";
 
+export interface ValidateOptions {
+  /** Skip apiKey validation (for test connection with stored key) */
+  allowMissingApiKey?: boolean;
+}
+
 /** 校验配置完整性，返回错误列表（空数组表示通过） */
 export function validateAiConfig(
   input: Partial<AiSettingsInput>,
   registry: AiProviderRegistry = defaultRegistry,
+  options: ValidateOptions = {},
 ): AiConfigError[] {
   const errors: AiConfigError[] = [];
 
@@ -18,8 +24,8 @@ export function validateAiConfig(
     });
   }
 
-  // 校验 apiKey
-  if (!input.apiKey) {
+  // 校验 apiKey (可选跳过，用于测试连接时使用已存储的 key)
+  if (!options.allowMissingApiKey && !input.apiKey) {
     errors.push({ field: "apiKey", message: "API key is required" });
   }
 
@@ -52,9 +58,10 @@ export function validateAiConfig(
 export function resolveAiConfig(
   input: AiSettingsInput,
   registry: AiProviderRegistry = defaultRegistry,
+  options: ValidateOptions = {},
 ): AiConfig {
   // 先校验
-  const errors = validateAiConfig(input, registry);
+  const errors = validateAiConfig(input, registry, options);
   if (errors.length > 0) {
     throw new Error(errors.map((e) => `${e.field}: ${e.message}`).join("; "));
   }
