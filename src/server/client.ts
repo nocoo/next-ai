@@ -1,4 +1,3 @@
-import "server-only";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { createOpenAI } from "@ai-sdk/openai";
 import type { AiConfig } from "../core/types";

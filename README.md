@@ -180,8 +180,11 @@ export async function POST(req: Request) {
 | Import Path | Contents | Environment |
 |-------------|----------|-------------|
 | `@nocoo/next-ai` | Types, constants, registry, utilities | Universal |
-| `@nocoo/next-ai/server` | AI client, helpers, config resolvers | Server-only |
+| `@nocoo/next-ai/server` | AI client, helpers, config resolvers | Server (Vite/vinext compatible) |
+| `@nocoo/next-ai/server-next` | Same as `/server` with `server-only` guard | Server (Next.js only) |
 | `@nocoo/next-ai/react` | Components, hooks, context | Client |
+
+> **Note**: Use `/server-next` in Next.js App Router projects for strict client-side import prevention. Use `/server` for Vite, vinext, or other frameworks.
 
 ### Built-in Providers
 

@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.1] - 2026-04-06
+
+### Added
+
+- **Vite/vinext Compatibility** — New `/server` entry without `server-only` for Vite-based projects
+- **Next.js Strict Mode** — New `/server-next` entry with `server-only` guard for Next.js App Router
+
+### Changed
+
+- `server-only` is now an optional peer dependency (only needed for `/server-next`)
+- `/server` no longer imports `server-only`, making it compatible with Vite SSR
+
 ## [0.1.0] - 2026-04-06
 
 ### Added

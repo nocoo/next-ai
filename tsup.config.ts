@@ -11,9 +11,18 @@ export default defineConfig([
     clean: true,
     external: ["react", "react-dom", "server-only"],
   },
-  // Server entry - no banner needed
+  // Server entry (universal, works with Vite/vinext) - no banner needed
   {
     entry: { server: "src/server.ts" },
+    format: ["esm", "cjs"],
+    dts: true,
+    splitting: false,
+    sourcemap: true,
+    external: ["react", "react-dom", "server-only"],
+  },
+  // Server entry for Next.js (with server-only protection)
+  {
+    entry: { "server-next": "src/server-next.ts" },
     format: ["esm", "cjs"],
     dts: true,
     splitting: false,
