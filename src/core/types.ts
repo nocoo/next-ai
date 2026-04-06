@@ -47,7 +47,8 @@ export interface AiSettingsReadonly {
 /** 测试连接的配置（草稿配置，无需先保存） */
 export interface AiTestConfig {
   provider: string;
-  apiKey: string;
+  /** API Key - 如果为空或未提供，服务端应使用已存储的 key */
+  apiKey?: string;
   model: string;
   baseURL?: string;
   sdkType?: SdkType;

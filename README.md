@@ -39,7 +39,7 @@ bun add @nocoo/next-ai
 
 ```typescript
 // lib/ai-adapter.ts
-import type { AiStorageAdapter } from "@nocoo/next-ai";
+import type { AiStorageAdapter, AiTestConfig } from "@nocoo/next-ai";
 
 export const aiAdapter: AiStorageAdapter = {
   async getSettings() {
@@ -54,8 +54,13 @@ export const aiAdapter: AiStorageAdapter = {
     });
     return res.json();
   },
-  async testConnection() {
-    const res = await fetch("/api/settings/ai/test", { method: "POST" });
+  async testConnection(config: AiTestConfig) {
+    // config.apiKey may be undefined - server should use stored key in that case
+    const res = await fetch("/api/settings/ai/test", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(config),
+    });
     return res.json();
   },
 };

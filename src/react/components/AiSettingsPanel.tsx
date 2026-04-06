@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { AiTestResult, SdkType } from "../../core/types";
 import { useAiSettings, useAiTest, useProviderRegistry } from "../hooks";
 import { cn } from "../styles";
@@ -56,21 +56,21 @@ export function AiSettingsPanel({
   const registry = useProviderRegistry();
 
   // Form state
-  const [provider, setProvider] = useState(settings?.provider ?? "");
-  const [model, setModel] = useState(settings?.model ?? "");
+  const [provider, setProvider] = useState("");
+  const [model, setModel] = useState("");
   const [apiKey, setApiKey] = useState("");
-  const [baseURL, setBaseURL] = useState(settings?.baseURL ?? "");
-  const [sdkType, setSdkType] = useState<SdkType | "">(settings?.sdkType ?? "");
+  const [baseURL, setBaseURL] = useState("");
+  const [sdkType, setSdkType] = useState<SdkType | "">("");
 
   // Sync form state when settings load
-  useState(() => {
+  useEffect(() => {
     if (settings) {
       setProvider(settings.provider);
       setModel(settings.model);
       setBaseURL(settings.baseURL ?? "");
       setSdkType(settings.sdkType ?? "");
     }
-  });
+  }, [settings]);
 
   const isCustomProvider = provider === "custom";
   const providerInfo = registry.get(provider);
@@ -90,7 +90,7 @@ export function AiSettingsPanel({
   const handleTest = async () => {
     const testResult = await test({
       provider,
-      apiKey: apiKey || "", // Use current input or empty (adapter should use stored key)
+      apiKey: apiKey || undefined, // If empty, server should use stored key
       model,
       baseURL: isCustomProvider ? baseURL : providerInfo?.baseURL,
       sdkType: isCustomProvider ? (sdkType as SdkType) : providerInfo?.sdkType,
