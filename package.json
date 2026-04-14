@@ -32,7 +32,7 @@
     "test": "bun test __tests__/unit",
     "test:integration": "bun test __tests__/integration",
     "test:coverage": "bun test __tests__/unit --coverage",
-    "lint": "biome check .",
+    "lint": "biome check --error-on-warnings .",
     "lint:fix": "biome check . --write",
     "typecheck": "tsc --noEmit",
     "gate:security": "bun run scripts/gate-security.ts",
