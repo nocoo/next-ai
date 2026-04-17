@@ -84,5 +84,10 @@
   "bugs": {
     "url": "https://github.com/nocoo/next-ai/issues"
   },
-  "homepage": "https://github.com/nocoo/next-ai#readme"
+  "homepage": "https://github.com/nocoo/next-ai#readme",
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json}": [
+      "biome check --error-on-warnings --no-errors-on-unmatched"
+    ]
+  }
 }
