@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { generateText } from "ai";
 import {
   aiChat,
   aiComplete,
@@ -118,5 +119,111 @@ describe("aiCompleteWithRetry", () => {
         retries: -1,
       }),
     ).rejects.toThrow("retries must be at least 1");
+  });
+
+  test("throws last error after all retries fail", async () => {
+    const mockedGenerateText = generateText as unknown as ReturnType<
+      typeof import("bun:test").mock
+    >;
+    const originalImpl = mockedGenerateText.getMockImplementation();
+    let callCount = 0;
+    mockedGenerateText.mockImplementation(async () => {
+      callCount++;
+      throw new Error(`failure ${callCount}`);
+    });
+
+    try {
+      await expect(
+        aiCompleteWithRetry("Hello", {
+          settings: TEST_SETTINGS,
+          retries: 3,
+          retryDelay: 1,
+        }),
+      ).rejects.toThrow("failure 3");
+      expect(callCount).toBe(3);
+    } finally {
+      mockedGenerateText.mockImplementation(
+        originalImpl ??
+          (async () => ({
+            text: "mocked response",
+            usage: { inputTokens: 10, outputTokens: 20, totalTokens: 30 },
+          })),
+      );
+    }
+  });
+
+  test("succeeds after retrying past initial failures", async () => {
+    const mockedGenerateText = generateText as unknown as ReturnType<
+      typeof import("bun:test").mock
+    >;
+    const originalImpl = mockedGenerateText.getMockImplementation();
+    let callCount = 0;
+    mockedGenerateText.mockImplementation(async () => {
+      callCount++;
+      if (callCount < 3) {
+        throw new Error(`transient ${callCount}`);
+      }
+      return {
+        text: "recovered",
+        usage: { inputTokens: 1, outputTokens: 2, totalTokens: 3 },
+      };
+    });
+
+    try {
+      const result = await aiCompleteWithRetry("Hello", {
+        settings: TEST_SETTINGS,
+        retries: 5,
+        retryDelay: 1,
+      });
+      expect(result.text).toBe("recovered");
+      expect(callCount).toBe(3);
+    } finally {
+      mockedGenerateText.mockImplementation(
+        originalImpl ??
+          (async () => ({
+            text: "mocked response",
+            usage: { inputTokens: 10, outputTokens: 20, totalTokens: 30 },
+          })),
+      );
+    }
+  });
+
+  test("uses incremental backoff between retries", async () => {
+    const mockedGenerateText = generateText as unknown as ReturnType<
+      typeof import("bun:test").mock
+    >;
+    const originalImpl = mockedGenerateText.getMockImplementation();
+    const attemptTimes: number[] = [];
+    mockedGenerateText.mockImplementation(async () => {
+      attemptTimes.push(Date.now());
+      throw new Error("always fails");
+    });
+
+    const retryDelay = 50;
+    try {
+      await expect(
+        aiCompleteWithRetry("Hello", {
+          settings: TEST_SETTINGS,
+          retries: 3,
+          retryDelay,
+        }),
+      ).rejects.toThrow("always fails");
+
+      expect(attemptTimes.length).toBe(3);
+      const firstGap = attemptTimes[1] - attemptTimes[0];
+      const secondGap = attemptTimes[2] - attemptTimes[1];
+      // Allow scheduler jitter but require monotonic growth roughly matching retryDelay * (i+1).
+      expect(firstGap).toBeGreaterThanOrEqual(retryDelay - 5);
+      expect(secondGap).toBeGreaterThanOrEqual(retryDelay * 2 - 5);
+      expect(secondGap).toBeGreaterThan(firstGap);
+    } finally {
+      mockedGenerateText.mockImplementation(
+        originalImpl ??
+          (async () => ({
+            text: "mocked response",
+            usage: { inputTokens: 10, outputTokens: 20, totalTokens: 30 },
+          })),
+      );
+    }
   });
 });
