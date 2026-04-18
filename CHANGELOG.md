@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2026-04-18
+
+### Added
+
+- **CI Workflow** — GitHub Actions CI with base-ci@v2026 for automated testing
+- **Unit Tests** — Cover `aiCompleteWithRetry` retry paths for improved reliability
+
+### Changed
+
+- **lint-staged** — Add lint-staged for pre-commit quality checks (G1 compliance)
+- **Lint Strictness** — Enforce `--max-warnings=0` for 6DQ G1 compliance
+
 ## [0.2.0] - 2026-04-06
 
 ### Added
