@@ -21,6 +21,6 @@
     "indentWidth": 2
   },
   "files": {
-    "ignore": ["dist", "node_modules", "*.d.ts"]
+    "ignore": ["dist", "node_modules", "*.d.ts", ".next", "examples/**/.next"]
   }
 }
