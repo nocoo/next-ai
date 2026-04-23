@@ -294,7 +294,7 @@ scenarios against their respective mock APIs.
 | # | Test | Expectation |
 |---|------|-------------|
 | 1 | Selecting `custom` reveals extra fields | `baseURL` and `sdkType` inputs become visible. |
-| 2 | Custom config persists | Fill `baseURL`, `sdkType`, `model`, `apiKey`; save; reload; all values are restored from the mock API. |
+| 2 | Custom config persists | Fill `baseURL`, `sdkType`, `model`, `apiKey`; save; reload; `baseURL`, `sdkType`, and `model` are restored from the mock API and the API key shows as "stored" (`hasApiKey` indicator) — the actual `apiKey` value is never returned by GET. |
 
 ### 4.3 `test-connection.spec.ts` — connection test
 
