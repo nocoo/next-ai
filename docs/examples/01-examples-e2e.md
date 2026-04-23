@@ -29,6 +29,7 @@ examples/
 ├── next-app/
 │   ├── app/
 │   │   ├── layout.tsx
+│   │   ├── globals.css
 │   │   ├── page.tsx
 │   │   ├── settings/
 │   │   │   └── ai/
@@ -47,12 +48,15 @@ examples/
 │   │   └── test-connection.spec.ts
 │   ├── playwright.config.ts
 │   ├── next.config.ts
+│   ├── tailwind.config.ts
+│   ├── postcss.config.js
 │   ├── tsconfig.json
 │   └── package.json
 └── vite-app/
     ├── src/
     │   ├── App.tsx
     │   ├── main.tsx
+    │   ├── index.css
     │   ├── ai-adapter.ts
     │   └── mock-server.ts
     ├── e2e/
@@ -62,6 +66,8 @@ examples/
     ├── index.html
     ├── playwright.config.ts
     ├── vite.config.ts
+    ├── tailwind.config.ts
+    ├── postcss.config.js
     ├── tsconfig.json
     └── package.json
 ```
@@ -70,7 +76,8 @@ examples/
 
 - **Next.js 15 App Router** project, React 19, TypeScript.
 - `app/layout.tsx` — root layout. Injects CSS variables produced by
-  `generateCssVariables(basaltTokens)` into a `<style>` tag in `<head>`.
+  `generateCssVariables("light")` (and optionally `generateCssVariables("dark")`
+  scoped under a `.dark` selector) into a `<style>` tag in `<head>`.
 - `app/page.tsx` — landing page with a single link to `/settings/ai`.
 - `app/settings/ai/page.tsx` — client component that wraps
   `<AiSettingsPanel />` in `<AiConfigProvider adapter={...}>`. The adapter
@@ -91,7 +98,18 @@ Runtime dependencies:
 Dev dependencies:
 
 - `@playwright/test`, `typescript`, `@types/node`, `@types/react`,
-  `@types/react-dom`.
+  `@types/react-dom`, `tailwindcss`, `postcss`, `autoprefixer`.
+
+The SDK's React components are styled with Tailwind utility classes, so
+the example must set up Tailwind:
+
+- `tailwind.config.ts` — sets `content` to include the example's own
+  `app/**/*.{ts,tsx}` plus the SDK distribution path
+  (`../../dist/**/*.{js,mjs}`) so utility classes used inside SDK
+  components are not purged.
+- `app/globals.css` — contains the Tailwind directives
+  (`@tailwind base; @tailwind components; @tailwind utilities;`) and is
+  imported from `app/layout.tsx`.
 
 ### 2.2 vite-app
 
@@ -104,9 +122,28 @@ Dev dependencies:
   deps) that mirrors the Next.js mock API. Started by Playwright's
   `webServer` config alongside Vite's dev server.
 - `index.html` — Vite entry. Injects CSS variables either via a
-  `<style>` tag in `<head>` populated from `generateCssVariables`, or via
-  a top-level effect in `App.tsx` (whichever is simpler at implementation
-  time — both are valid).
+  `<style>` tag in `<head>` populated from `generateCssVariables("light")`,
+  or via a top-level effect in `App.tsx` (whichever is simpler at
+  implementation time — both are valid).
+- `vite.config.ts` — uses `@vitejs/plugin-react` and proxies
+  `/api/*` requests to the mock server on port 5174 so the adapter can
+  use relative URLs:
+
+  ```ts
+  // examples/vite-app/vite.config.ts
+  import { defineConfig } from "vite";
+  import react from "@vitejs/plugin-react";
+
+  export default defineConfig({
+    plugins: [react()],
+    server: {
+      port: 5173,
+      proxy: {
+        "/api": "http://localhost:5174",
+      },
+    },
+  });
+  ```
 
 Runtime dependencies:
 
@@ -116,7 +153,15 @@ Runtime dependencies:
 Dev dependencies:
 
 - `vite`, `@vitejs/plugin-react`, `@playwright/test`, `typescript`,
-  `@types/react`, `@types/react-dom`, `@types/node`.
+  `@types/react`, `@types/react-dom`, `@types/node`, `tailwindcss`,
+  `postcss`, `autoprefixer`.
+
+Tailwind setup mirrors the Next.js app:
+
+- `tailwind.config.ts` — `content` covers `index.html`,
+  `src/**/*.{ts,tsx}`, and the SDK dist path
+  (`../../dist/**/*.{js,mjs}`).
+- `src/index.css` — Tailwind directives, imported once from `main.tsx`.
 
 ## 3. Mock API Design
 
@@ -203,11 +248,13 @@ import type {
 } from "@nocoo/next-ai";
 
 export const aiAdapter: AiStorageAdapter = {
-  async load(): Promise<AiSettingsReadonly> {
+  async getSettings(): Promise<AiSettingsReadonly> {
     const res = await fetch("/api/settings/ai");
     return res.json();
   },
-  async save(input: Partial<AiSettingsInput>): Promise<AiSettingsReadonly> {
+  async saveSettings(
+    input: Partial<AiSettingsInput>,
+  ): Promise<AiSettingsReadonly> {
     const res = await fetch("/api/settings/ai", {
       method: "PUT",
       headers: { "content-type": "application/json" },
@@ -215,7 +262,7 @@ export const aiAdapter: AiStorageAdapter = {
     });
     return res.json();
   },
-  async test(cfg: AiTestConfig): Promise<AiTestResult> {
+  async testConnection(cfg: AiTestConfig): Promise<AiTestResult> {
     const res = await fetch("/api/settings/ai/test", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -236,10 +283,10 @@ scenarios against their respective mock APIs.
 | # | Test | Expectation |
 |---|------|-------------|
 | 1 | Default provider on load | Provider select shows `anthropic`. |
-| 2 | Switching provider updates model dropdown | Selecting `openai` repopulates the model `<select>` with OpenAI models from the registry. |
+| 2 | Switching provider updates model dropdown | Selecting `aihubmix` repopulates the model `<select>` with that provider's models from the registry (e.g. `gpt-4o-mini`). |
 | 3 | API key field is masked | `<input type="password">` (or equivalent), value is not visible in DOM as plain text. |
-| 4 | "Stored" indicator after save | After saving with a non-empty key, the panel shows the "stored" indicator on next load. |
-| 5 | Save calls PUT and shows success feedback | Network capture asserts `PUT /api/settings/ai` was called once; UI shows success state. |
+| 4 | "Stored" indicator after save | After saving with a non-empty key, on next load the panel renders the muted helper text "API key is set. Enter a new key to update it." beneath the API key field. |
+| 5 | Save calls PUT and triggers success callback | Network capture asserts `PUT /api/settings/ai` was called once. The panel itself shows no inline save-success badge — assert via the `onSaveSuccess` prop (wire a sentinel DOM node in the host page that flips on callback) and the cleared API key input. |
 | 6 | Reload preserves saved settings | After reload, panel reflects the most recent saved provider/model. |
 
 ### 4.2 `custom-provider.spec.ts` — custom provider flow
@@ -254,7 +301,7 @@ scenarios against their respective mock APIs.
 | # | Test | Expectation |
 |---|------|-------------|
 | 1 | Test button calls POST endpoint | Network capture asserts `POST /api/settings/ai/test`. |
-| 2 | Success result displays model + provider | UI renders the returned model and provider strings. |
+| 2 | Success result displays model | UI renders the green "✓ Connection successful" badge with the returned model name in parentheses (e.g. `(claude-sonnet-4-20250514)`). The panel does not display the provider string in the badge — the model is the only echoed value. |
 
 ### 4.4 Optional: dark mode
 
@@ -263,7 +310,7 @@ mode trigger, add a `dark-mode.spec.ts`:
 
 | # | Test | Expectation |
 |---|------|-------------|
-| 1 | Dark class swaps tokens | Toggling the dark class on `<html>` causes computed `--basalt-*` values to change. |
+| 1 | Dark class swaps tokens | Toggling the dark class on `<html>` causes the computed unprefixed CSS variables emitted by `generateCssVariables` (e.g. `--background`, `--card-foreground`, `--border`) to change between the `light` and `dark` token sets. |
 
 ### 4.5 Sample Playwright config
 
@@ -362,6 +409,9 @@ e2e-examples:
     - run: bun install
     - run: bun run build
     - run: bun install
+      working-directory: examples/${{ matrix.app }}
+    - if: matrix.app == 'next-app'
+      run: bun run build
       working-directory: examples/${{ matrix.app }}
     - run: bunx playwright install --with-deps chromium
       working-directory: examples/${{ matrix.app }}
