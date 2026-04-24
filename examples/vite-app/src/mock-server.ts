@@ -9,11 +9,13 @@ import type {
   AiTestConfig,
 } from "@nocoo/next-ai";
 
-let state: AiSettingsReadonly = {
+const initialState: AiSettingsReadonly = {
   provider: "anthropic",
   model: "claude-sonnet-4-20250514",
   hasApiKey: false,
 };
+
+let state: AiSettingsReadonly = { ...initialState };
 let apiKey = "";
 
 function readJson<T>(req: IncomingMessage): Promise<T> {
@@ -52,6 +54,12 @@ const server = createServer(async (req, res) => {
     }
     const { apiKey: _omit, ...rest } = body;
     state = { ...state, ...rest, hasApiKey: apiKey.length > 0 };
+    return sendJson(res, 200, state);
+  }
+
+  if (url === "/api/settings/ai" && method === "DELETE") {
+    state = { ...initialState };
+    apiKey = "";
     return sendJson(res, 200, state);
   }
 
