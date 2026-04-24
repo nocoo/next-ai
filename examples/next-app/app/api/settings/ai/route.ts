@@ -7,25 +7,41 @@ const initialState: AiSettingsReadonly = {
   hasApiKey: false,
 };
 
-let state: AiSettingsReadonly = { ...initialState };
-let apiKey = "";
+type Bucket = { state: AiSettingsReadonly; apiKey: string };
+const buckets = new Map<string, Bucket>();
 
-export async function GET() {
-  return NextResponse.json(state);
+function getBucket(req: Request): Bucket {
+  const key = req.headers.get("x-test-bucket") ?? "default";
+  let bucket = buckets.get(key);
+  if (!bucket) {
+    bucket = { state: { ...initialState }, apiKey: "" };
+    buckets.set(key, bucket);
+  }
+  return bucket;
+}
+
+export async function GET(req: Request) {
+  return NextResponse.json(getBucket(req).state);
 }
 
 export async function PUT(req: Request) {
+  const bucket = getBucket(req);
   const body = (await req.json()) as Partial<AiSettingsInput>;
   if (typeof body.apiKey === "string" && body.apiKey.length > 0) {
-    apiKey = body.apiKey;
+    bucket.apiKey = body.apiKey;
   }
   const { apiKey: _omit, ...rest } = body;
-  state = { ...state, ...rest, hasApiKey: apiKey.length > 0 };
-  return NextResponse.json(state);
+  bucket.state = {
+    ...bucket.state,
+    ...rest,
+    hasApiKey: bucket.apiKey.length > 0,
+  };
+  return NextResponse.json(bucket.state);
 }
 
-export async function DELETE() {
-  state = { ...initialState };
-  apiKey = "";
-  return NextResponse.json(state);
+export async function DELETE(req: Request) {
+  const bucket = getBucket(req);
+  bucket.state = { ...initialState };
+  bucket.apiKey = "";
+  return NextResponse.json(bucket.state);
 }

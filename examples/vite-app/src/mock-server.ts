@@ -15,8 +15,19 @@ const initialState: AiSettingsReadonly = {
   hasApiKey: false,
 };
 
-let state: AiSettingsReadonly = { ...initialState };
-let apiKey = "";
+type Bucket = { state: AiSettingsReadonly; apiKey: string };
+const buckets = new Map<string, Bucket>();
+
+function getBucket(req: IncomingMessage): Bucket {
+  const header = req.headers["x-test-bucket"];
+  const key = (Array.isArray(header) ? header[0] : header) ?? "default";
+  let bucket = buckets.get(key);
+  if (!bucket) {
+    bucket = { state: { ...initialState }, apiKey: "" };
+    buckets.set(key, bucket);
+  }
+  return bucket;
+}
 
 function readJson<T>(req: IncomingMessage): Promise<T> {
   return new Promise((resolve, reject) => {
@@ -44,23 +55,29 @@ const server = createServer(async (req, res) => {
   const method = req.method ?? "GET";
 
   if (url === "/api/settings/ai" && method === "GET") {
-    return sendJson(res, 200, state);
+    return sendJson(res, 200, getBucket(req).state);
   }
 
   if (url === "/api/settings/ai" && method === "PUT") {
+    const bucket = getBucket(req);
     const body = await readJson<Partial<AiSettingsInput>>(req);
     if (typeof body.apiKey === "string" && body.apiKey.length > 0) {
-      apiKey = body.apiKey;
+      bucket.apiKey = body.apiKey;
     }
     const { apiKey: _omit, ...rest } = body;
-    state = { ...state, ...rest, hasApiKey: apiKey.length > 0 };
-    return sendJson(res, 200, state);
+    bucket.state = {
+      ...bucket.state,
+      ...rest,
+      hasApiKey: bucket.apiKey.length > 0,
+    };
+    return sendJson(res, 200, bucket.state);
   }
 
   if (url === "/api/settings/ai" && method === "DELETE") {
-    state = { ...initialState };
-    apiKey = "";
-    return sendJson(res, 200, state);
+    const bucket = getBucket(req);
+    bucket.state = { ...initialState };
+    bucket.apiKey = "";
+    return sendJson(res, 200, bucket.state);
   }
 
   if (url === "/api/settings/ai/test" && method === "POST") {

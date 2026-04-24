@@ -1,5 +1,4 @@
-import { expect, test } from "@playwright/test";
-import { gotoSettings, waitForTest } from "./helpers";
+import { expect, gotoSettings, test, waitForTest } from "./helpers";
 
 const SETTINGS_PATH = "/";
 

@@ -1,5 +1,4 @@
-import { expect, test } from "@playwright/test";
-import { gotoSettings, waitForPut } from "./helpers";
+import { expect, gotoSettings, test, waitForPut } from "./helpers";
 
 const SETTINGS_PATH = "/settings/ai";
 
@@ -50,6 +49,17 @@ test("save calls PUT and triggers onSaveSuccess", async ({ page }) => {
   await gotoSettings(page, SETTINGS_PATH);
   await page.locator("#ai-api-key-input").fill("sk-test-abc");
 
+  let putCount = 0;
+  page.on("request", (req) => {
+    if (
+      req.method() === "PUT" &&
+      req.url().includes("/api/settings/ai") &&
+      !req.url().includes("/test")
+    ) {
+      putCount += 1;
+    }
+  });
+
   const putResponse = waitForPut(page);
   await page.getByRole("button", { name: "Save Settings" }).click();
   const res = await putResponse;
@@ -60,6 +70,7 @@ test("save calls PUT and triggers onSaveSuccess", async ({ page }) => {
   await expect(
     page.getByText("API key is set. Enter a new key to update it."),
   ).toBeVisible();
+  expect(putCount).toBe(1);
 });
 
 test("reload preserves saved provider and model", async ({ page }) => {
