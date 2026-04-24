@@ -1,11 +1,13 @@
 import type { AiSettingsInput, AiSettingsReadonly } from "@nocoo/next-ai";
 import { NextResponse } from "next/server";
 
-let state: AiSettingsReadonly = {
+const initialState: AiSettingsReadonly = {
   provider: "anthropic",
   model: "claude-sonnet-4-20250514",
   hasApiKey: false,
 };
+
+let state: AiSettingsReadonly = { ...initialState };
 let apiKey = "";
 
 export async function GET() {
@@ -19,5 +21,11 @@ export async function PUT(req: Request) {
   }
   const { apiKey: _omit, ...rest } = body;
   state = { ...state, ...rest, hasApiKey: apiKey.length > 0 };
+  return NextResponse.json(state);
+}
+
+export async function DELETE() {
+  state = { ...initialState };
+  apiKey = "";
   return NextResponse.json(state);
 }
