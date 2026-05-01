@@ -1,7 +1,0 @@
-[test]
-preload = ["./__tests__/preload.ts"]
-coverage = true
-# Line coverage is the primary metric; function coverage includes test helpers
-coverageThreshold = { line = 90 }
-coverageSkipTestFiles = true
-coveragePathIgnorePatterns = ["__tests__/"]

@@ -1,5 +1,5 @@
-import { describe, expect, test } from "bun:test";
 import { generateText } from "ai";
+import { type Mock, describe, expect, test } from "vitest";
 import {
   aiChat,
   aiComplete,
@@ -122,9 +122,7 @@ describe("aiCompleteWithRetry", () => {
   });
 
   test("throws last error after all retries fail", async () => {
-    const mockedGenerateText = generateText as unknown as ReturnType<
-      typeof import("bun:test").mock
-    >;
+    const mockedGenerateText = generateText as unknown as Mock;
     const originalImpl = mockedGenerateText.getMockImplementation();
     let callCount = 0;
     mockedGenerateText.mockImplementation(async () => {
@@ -153,9 +151,7 @@ describe("aiCompleteWithRetry", () => {
   });
 
   test("succeeds after retrying past initial failures", async () => {
-    const mockedGenerateText = generateText as unknown as ReturnType<
-      typeof import("bun:test").mock
-    >;
+    const mockedGenerateText = generateText as unknown as Mock;
     const originalImpl = mockedGenerateText.getMockImplementation();
     let callCount = 0;
     mockedGenerateText.mockImplementation(async () => {
@@ -189,9 +185,7 @@ describe("aiCompleteWithRetry", () => {
   });
 
   test("uses incremental backoff between retries", async () => {
-    const mockedGenerateText = generateText as unknown as ReturnType<
-      typeof import("bun:test").mock
-    >;
+    const mockedGenerateText = generateText as unknown as Mock;
     const originalImpl = mockedGenerateText.getMockImplementation();
     const attemptTimes: number[] = [];
     mockedGenerateText.mockImplementation(async () => {
@@ -216,6 +210,62 @@ describe("aiCompleteWithRetry", () => {
       expect(firstGap).toBeGreaterThanOrEqual(retryDelay - 5);
       expect(secondGap).toBeGreaterThanOrEqual(retryDelay * 2 - 5);
       expect(secondGap).toBeGreaterThan(firstGap);
+    } finally {
+      mockedGenerateText.mockImplementation(
+        originalImpl ??
+          (async () => ({
+            text: "mocked response",
+            usage: { inputTokens: 10, outputTokens: 20, totalTokens: 30 },
+          })),
+      );
+    }
+  });
+});
+
+describe("usage normalization fallbacks", () => {
+  test("aiComplete defaults missing usage fields to 0", async () => {
+    const mockedGenerateText = generateText as unknown as Mock;
+    const originalImpl = mockedGenerateText.getMockImplementation();
+    mockedGenerateText.mockImplementation(async () => ({
+      text: "no-usage",
+      usage: {},
+    }));
+
+    try {
+      const result = await aiComplete("Hello", { settings: TEST_SETTINGS });
+      expect(result.usage).toEqual({
+        promptTokens: 0,
+        completionTokens: 0,
+        totalTokens: 0,
+      });
+    } finally {
+      mockedGenerateText.mockImplementation(
+        originalImpl ??
+          (async () => ({
+            text: "mocked response",
+            usage: { inputTokens: 10, outputTokens: 20, totalTokens: 30 },
+          })),
+      );
+    }
+  });
+
+  test("aiChat defaults missing usage fields to 0", async () => {
+    const mockedGenerateText = generateText as unknown as Mock;
+    const originalImpl = mockedGenerateText.getMockImplementation();
+    mockedGenerateText.mockImplementation(async () => ({
+      text: "no-usage",
+      usage: {},
+    }));
+
+    try {
+      const result = await aiChat([{ role: "user", content: "Hi" }], {
+        settings: TEST_SETTINGS,
+      });
+      expect(result.usage).toEqual({
+        promptTokens: 0,
+        completionTokens: 0,
+        totalTokens: 0,
+      });
     } finally {
       mockedGenerateText.mockImplementation(
         originalImpl ??

@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import { BUILTIN_PROVIDERS } from "../../src/core/providers";
 import { AiProviderRegistry, defaultRegistry } from "../../src/core/registry";
 import type { AiProviderInfo } from "../../src/core/types";

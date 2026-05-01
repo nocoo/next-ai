@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import type { AiConfig } from "../../src/core/types";
 import { createAiClient, createAiModel } from "../../src/server/client";
 
