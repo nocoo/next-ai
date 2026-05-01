@@ -28,7 +28,8 @@
       ".next",
       "examples/**/.next",
       "examples/**/test-results",
-      "examples/**/playwright-report"
+      "examples/**/playwright-report",
+      "coverage"
     ]
   }
 }

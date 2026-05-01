@@ -29,9 +29,9 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "test": "bun test __tests__/unit",
-    "test:integration": "bun test __tests__/integration",
-    "test:coverage": "bun test __tests__/unit --coverage",
+    "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:coverage": "vitest run --coverage",
     "lint": "biome check --error-on-warnings .",
     "lint:fix": "biome check . --write",
     "typecheck": "tsc --noEmit",
@@ -68,11 +68,13 @@
     "@biomejs/biome": "^1.9.0",
     "@types/bun": "^1.2.5",
     "@types/react": "^19.0.0",
+    "@vitest/coverage-v8": "^4.1.5",
     "husky": "^9.0.0",
     "react": "^19.0.0",
     "tailwindcss": "^4.0.0",
     "tsup": "^8.4.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^4.1.5"
   },
   "keywords": ["ai", "llm", "anthropic", "openai", "next.js", "react"],
   "author": "nocoo",

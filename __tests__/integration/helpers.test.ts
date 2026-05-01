@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import { aiChat, aiComplete } from "../../src/server/helpers";
 
 // 使用环境变量配置测试 API Key

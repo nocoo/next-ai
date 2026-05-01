@@ -5,4 +5,4 @@ bun run typecheck || exit 1
 
 # L1: Unit tests + coverage
 echo "🧪 Running unit tests..."
-bun test __tests__/unit --coverage || exit 1
+bun run test:coverage || exit 1

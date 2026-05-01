@@ -1,6 +1,6 @@
 # L2: Integration tests (if API key available)
 echo "🔗 Running integration tests..."
-bun test __tests__/integration || true  # Allow skip
+bun run test:integration || true  # Allow skip
 
 # G2: Security scan
 echo "🔒 Running security gate..."
