@@ -1,0 +1,7 @@
+title = "next-ai gitleaks config"
+
+[allowlist]
+description = "Allowlisted patterns"
+paths = [
+  '''\.lock$''',
+]
