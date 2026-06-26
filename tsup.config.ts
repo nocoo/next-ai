@@ -1,10 +1,11 @@
 import { defineConfig } from "tsup";
 
+// ai@7 dropped CJS, so the wrapper ships ESM-only as well.
 export default defineConfig([
   // Main entry (types, utils, constants) - no banner needed
   {
     entry: { index: "src/index.ts" },
-    format: ["esm", "cjs"],
+    format: ["esm"],
     dts: true,
     splitting: false,
     sourcemap: true,
@@ -14,7 +15,7 @@ export default defineConfig([
   // Server entry (universal, works with Vite/vinext) - no banner needed
   {
     entry: { server: "src/server.ts" },
-    format: ["esm", "cjs"],
+    format: ["esm"],
     dts: true,
     splitting: false,
     sourcemap: true,
@@ -23,7 +24,7 @@ export default defineConfig([
   // Server entry for Next.js (with server-only protection)
   {
     entry: { "server-next": "src/server-next.ts" },
-    format: ["esm", "cjs"],
+    format: ["esm"],
     dts: true,
     splitting: false,
     sourcemap: true,
@@ -32,7 +33,7 @@ export default defineConfig([
   // React entry - needs "use client" banner
   {
     entry: { react: "src/react.ts" },
-    format: ["esm", "cjs"],
+    format: ["esm"],
     dts: true,
     splitting: false,
     sourcemap: true,
