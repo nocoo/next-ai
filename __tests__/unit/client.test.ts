@@ -29,6 +29,34 @@ describe("createAiClient", () => {
     const client = createAiClient(config);
     expect(typeof client).toBe("function");
   });
+
+  test("supports Bearer auth for anthropic sdkType (LLM gateway like manifest)", () => {
+    const config: AiConfig = {
+      provider: "custom",
+      baseURL: "https://manifest.example.com",
+      apiKey: "mnfst_test_key",
+      model: "auto",
+      sdkType: "anthropic",
+      authType: "bearer",
+    };
+
+    const client = createAiClient(config);
+    expect(typeof client).toBe("function");
+  });
+
+  test("supports Bearer auth for openai sdkType (no-op vs default but valid)", () => {
+    const config: AiConfig = {
+      provider: "custom",
+      baseURL: "https://gateway.example.com",
+      apiKey: "tok_test",
+      model: "auto",
+      sdkType: "openai",
+      authType: "bearer",
+    };
+
+    const client = createAiClient(config);
+    expect(typeof client).toBe("function");
+  });
 });
 
 describe("createAiModel", () => {
@@ -67,6 +95,25 @@ describe("createAiModel", () => {
       model: "gpt-4o-mini",
       baseURL: "https://aihubmix.com/v1",
       apiKey: "sk-test",
+    });
+  });
+
+  test("creates Bearer-auth anthropic model with gateway baseURL", () => {
+    const config: AiConfig = {
+      provider: "custom",
+      baseURL: "https://manifest.example.com",
+      apiKey: "mnfst_test_key",
+      model: "auto",
+      sdkType: "anthropic",
+      authType: "bearer",
+    };
+
+    const model = createAiModel(config);
+
+    expect(model).toMatchObject({
+      type: "anthropic",
+      model: "auto",
+      baseURL: "https://manifest.example.com",
     });
   });
 });

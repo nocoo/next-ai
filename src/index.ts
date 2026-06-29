@@ -1,6 +1,7 @@
 // Core Types (from types.ts)
 export type {
   SdkType,
+  AuthType,
   BuiltinProvider,
   AiProvider,
   AiProviderInfo,

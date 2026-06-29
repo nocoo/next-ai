@@ -112,7 +112,7 @@ export function resolveAiConfig(
     throw new Error(errors.map((e) => `${e.field}: ${e.message}`).join("; "));
   }
 
-  const { provider, apiKey, model, baseURL, sdkType } = input;
+  const { provider, apiKey, model, baseURL, sdkType, authType } = input;
 
   if (provider === "custom") {
     // Type assertion is safe: validation ensures baseURL and sdkType exist for custom provider
@@ -122,6 +122,7 @@ export function resolveAiConfig(
       apiKey,
       model,
       sdkType: sdkType as AiConfig["sdkType"],
+      authType,
     };
   }
 
@@ -135,6 +136,7 @@ export function resolveAiConfig(
     apiKey,
     model: model || providerInfo.defaultModel,
     sdkType: providerInfo.sdkType,
+    authType,
   };
 }
 
