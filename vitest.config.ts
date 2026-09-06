@@ -23,8 +23,6 @@ export default defineConfig({
         // Barrel files — pure re-exports, no runtime logic to cover.
         "src/index.ts",
         "src/server.ts",
-        "src/server/index.ts",
-        "src/react/index.ts",
         // Type-only module — TypeScript types compile away.
         "src/core/types.ts",
         // Strict server-only entry — `import "server-only"` throws outside a
