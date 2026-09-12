@@ -5,6 +5,7 @@ const PORT = Number(process.env.PORT ?? 3100);
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
+  reporter: [["list"], ["html", { open: "never" }]],
   use: { baseURL: `http://localhost:${PORT}` },
   webServer: {
     command: `bun run build && PORT=${PORT} bun run start`,

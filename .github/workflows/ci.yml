@@ -19,38 +19,22 @@ jobs:
 
   e2e-examples:
     needs: quality
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         app: [next-app, vite-app]
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Setup root Bun and build library
-        uses: nocoo/base-ci/.github/actions/setup-js@ad43150de3a2be2fa464b5cd2f921dc4fa9f8f0f
-        with:
-          package-manager: "bun"
-          runtime-version: "1.4.2"
-          install-policy: "blocked"
-      - name: Build root library
-        run: bun run build
-      - name: Setup example dependencies
-        uses: nocoo/base-ci/.github/actions/setup-js@ad43150de3a2be2fa464b5cd2f921dc4fa9f8f0f
-        with:
-          package-manager: "bun"
-          runtime-version: "1.4.2"
-          working-directory: examples/${{ matrix.app }}
-          install-policy: "blocked"
-      - if: matrix.app == 'next-app'
-        run: bun run build
-        working-directory: examples/${{ matrix.app }}
-      - run: bunx playwright install --with-deps chromium
-        working-directory: examples/${{ matrix.app }}
-      - run: bunx playwright test
-        working-directory: examples/${{ matrix.app }}
-      - if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: playwright-report-${{ matrix.app }}
-          path: examples/${{ matrix.app }}/playwright-report
-          retention-days: 7
+    uses: nocoo/base-ci/.github/workflows/test-job.yml@ad43150de3a2be2fa464b5cd2f921dc4fa9f8f0f
+    with:
+      runtime-version: "1.4.2"
+      install-policy: "blocked"
+      pre-command: |
+        bun run build
+        cd "examples/${{ matrix.app }}"
+        bun install --frozen-lockfile --ignore-scripts
+      browser: "chromium"
+      browser-working-directory: examples/${{ matrix.app }}
+      command: cd "examples/${{ matrix.app }}" && bun run test:e2e
+      timeout-minutes: 15
+      artifact-name: playwright-report-${{ matrix.app }}
+      artifact-path: examples/${{ matrix.app }}/playwright-report
+      artifact-retention-days: 7
