@@ -9,12 +9,12 @@ on:
 
 jobs:
   quality:
-    uses: nocoo/base-ci/.github/workflows/bun-quality.yml@aec4adc1a817c56790d1698329ef9398a15a754a  # v2026.5
+    uses: nocoo/base-ci/.github/workflows/quality.yml@ab52d72877d386c9a8fd224e9ac868e88be90539
     with:
-      pre-command: "bun run build"
+      runtime-version: "1.4.2"
+      prepare-command: "bun run build"
       test-command: "bun run test:coverage"
       typecheck-command: "bun run typecheck"
-      enable-l2: "false"
     secrets: inherit
 
   e2e-examples:
@@ -25,8 +25,8 @@ jobs:
       matrix:
         app: [next-app, vite-app]
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
       - run: bun install --ignore-scripts
       - run: bun run build
       - run: bun install --ignore-scripts
@@ -39,7 +39,7 @@ jobs:
       - run: bunx playwright test
         working-directory: examples/${{ matrix.app }}
       - if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: playwright-report-${{ matrix.app }}
           path: examples/${{ matrix.app }}/playwright-report
