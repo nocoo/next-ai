@@ -27,11 +27,21 @@ jobs:
         app: [next-app, vite-app]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
-      - run: bun install --ignore-scripts
-      - run: bun run build
-      - run: bun install --ignore-scripts
-        working-directory: examples/${{ matrix.app }}
+      - name: Setup root Bun and build library
+        uses: nocoo/base-ci/.github/actions/setup-js@ab52d72877d386c9a8fd224e9ac868e88be90539
+        with:
+          package-manager: "bun"
+          runtime-version: "1.4.2"
+          install-policy: "blocked"
+      - name: Build root library
+        run: bun run build
+      - name: Setup example dependencies
+        uses: nocoo/base-ci/.github/actions/setup-js@ab52d72877d386c9a8fd224e9ac868e88be90539
+        with:
+          package-manager: "bun"
+          runtime-version: "1.4.2"
+          working-directory: examples/${{ matrix.app }}
+          install-policy: "blocked"
       - if: matrix.app == 'next-app'
         run: bun run build
         working-directory: examples/${{ matrix.app }}
