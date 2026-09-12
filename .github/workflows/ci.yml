@@ -14,6 +14,7 @@ jobs:
       runtime-version: "1.4.2"
       prepare-command: "bun run build"
       test-command: "bun run test:coverage"
+      coverage-path: "coverage"
       typecheck-command: "bun run typecheck"
     secrets: inherit
 
