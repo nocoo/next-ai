@@ -61,6 +61,7 @@ bun run gate:security       # osv-scanner + gitleaks; missing binary fails
 
 Status: `enforced` | `planned` | `manual` | `N/A`.
 6DQ = L1/L2/L3 + G1/G2 + D1.
+L1 requires statements/branches/functions/lines each ≥95%; no skipped or focused tests.
 
 | Change | Proof | Status | Evidence |
 |---|---|---|---|
@@ -69,7 +70,7 @@ Status: `enforced` | `planned` | `manual` | `N/A`.
 | UI path | L3 Playwright on example apps | enforced | CI `e2e-examples` next-app (`PORT` default 3100) / vite-app (5173+5174 mock) |
 | Types / lint | G1 0 error, 0 warning | enforced | `biome check --error-on-warnings`; pre-commit lint+typecheck; CI |
 | Deps / secrets | G2 osv-scanner + gitleaks; missing binary fails | enforced | pre-push `gate:security`; CI quality.yml default security |
-| Test isolation | D1 examples local; SQLite marker | N/A | no database. Example E2E uses in-memory mock APIs, not live LLM |
+| Test isolation | D1 isolated browser/mock-provider state and local-target guards | planned | Example E2E uses fresh Playwright contexts and local in-memory mock APIs. Optional integration still calls a remote provider when `TEST_ANTHROPIC_API_KEY` is supplied; complete offline-target enforcement is missing. SQLite/`_test_marker` are N/A because there is no database |
 | Bundler output | `bun run build` (tsup) | enforced | CI `prepare-command`; `prepublishOnly` |
 | Docs | docs/examples if public API changed | manual | human review |
 | Release | npm `prepublishOnly` build | planned | no dedicated release workflow in-repo |
