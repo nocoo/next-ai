@@ -16,14 +16,14 @@ This file is the **contract**. Hooks, CI, and config are **enforcement**. If the
 | Enforcement | `.husky/*`, `.github/workflows/ci.yml`, `vitest.config.ts`, `scripts/gate-security.ts` |
 | Machine rules | global `AGENTS.md`, `rules/git-commit.md` |
 | Accidents | [Retrospective.md](Retrospective.md) |
-| Env files | integration tests may need provider keys — never commit values |
+| Env files | optional `TEST_ANTHROPIC_API_KEY` for skipped integration tests — never commit values |
 
 ## Project Invariants
 
 - AI client creation is server-side only (`server-only` / `src/server-next.ts`). Do not move secrets to client components.
 - Storage is adapter-based; this library does not ship a database.
-- `src/react/**` is UI; L1 coverage excludes it by design (browser/E2E).
-- Integration tests hit real provider APIs when keys exist; they are not a substitute for isolated L2.
+- `src/react/**` is UI; L1 coverage **excludes** it. React logic is not unit-tested; example Playwright is the UI path, not L1.
+- Integration uses `TEST_ANTHROPIC_API_KEY` only (`skipIf` empty). Do not run live keyed APIs from this handbook. Not isolated L2.
 
 ## Stack / Layout
 
@@ -50,10 +50,11 @@ bun run typecheck           # tsc --noEmit
 bun run lint                # biome check --error-on-warnings .
 bun run build               # tsup
 bun run test:coverage       # vitest unit --coverage (95% four metrics)
-bun run test:integration    # vitest.integration.config.ts (real APIs; may skip)
-bun run gate:security       # scripts/gate-security.ts (osv-scanner + gitleaks; missing binary fails)
-# examples (after bun run build):
-cd examples/next-app && bun install --frozen-lockfile --ignore-scripts && bun run test:e2e
+bun run test:integration    # skip unless TEST_ANTHROPIC_API_KEY is set; do not run for docs
+bun run gate:security       # osv-scanner + gitleaks; missing binary fails
+# examples after `bun run build` + per-app `bun install --frozen-lockfile --ignore-scripts`:
+# next-app: webServer `bun run build && PORT=${PORT:-3100} bun run start`
+# vite-app: mock :5174 (`bun run mock`) + Vite :5173 (`bun run dev`) then `bun run test:e2e`
 ```
 
 ## Verification
@@ -63,26 +64,26 @@ Status: `enforced` | `planned` | `manual` | `N/A`.
 
 | Change | Proof | Status | Evidence |
 |---|---|---|---|
-| Logic | L1 Vitest ≥ 95% four metrics on `src/**` (exclusions listed in vitest.config.ts) | enforced | pre-commit `test:coverage`; CI same |
-| API / schema | L2 real HTTP against a local app, 100% library surface | planned | `test:integration` hits **remote** providers and pre-push uses `\|\| true` skip |
-| UI path | L3 Playwright on example apps | enforced | CI `e2e-examples` matrix next-app / vite-app |
-| Types / lint | G1 0 error, 0 warning | enforced | pre-commit lint+typecheck; CI |
+| Logic | L1 Vitest ≥ 95% four metrics on library `src/**` excluding `src/react/**` | enforced (library only) | `vitest.config.ts` 95; pre-commit `test:coverage`; CI same. React/UI unit tests **planned** |
+| API / schema | L2 real HTTP against a local app, 100% surface | planned | `__tests__/integration` is remote Anthropic via `TEST_ANTHROPIC_API_KEY`; pre-push `\|\| true` |
+| UI path | L3 Playwright on example apps | enforced | CI `e2e-examples` next-app (`PORT` default 3100) / vite-app (5173+5174 mock) |
+| Types / lint | G1 0 error, 0 warning | enforced | `biome check --error-on-warnings`; pre-commit lint+typecheck; CI |
 | Deps / secrets | G2 osv-scanner + gitleaks; missing binary fails | enforced | pre-push `gate:security`; CI quality.yml default security |
-| Test isolation | D1 examples/L3 local; no prod keys in fixtures | planned | integration uses live providers when keyed; no per-run SQLite (library has none) |
+| Test isolation | D1 examples local; SQLite marker | N/A | no database. Example E2E uses in-memory mock APIs, not live LLM |
 | Bundler output | `bun run build` (tsup) | enforced | CI `prepare-command`; `prepublishOnly` |
 | Docs | docs/examples if public API changed | manual | human review |
 | Release | npm `prepublishOnly` build | planned | no dedicated release workflow in-repo |
 
 | Hook | Verifies | Budget | Runs |
 |---|---|---|---|
-| pre-commit | lint, typecheck, test:coverage | <30s | G1 → L1 |
-| pre-push | integration **allowed to skip**; gate-security must pass | <3min | G2; not a failing L2 |
+| pre-commit | working-tree lint, typecheck, `test:coverage` (not index snapshot) | target <30s (unmeasured) | G1 → library L1 |
+| pre-push | working-tree `test:integration` (`\|\| true`); `gate-security` on lockfile + `gitleaks detect` (not stdin refs) | target <3min (unmeasured) | G2; not a failing L2 |
 
-Hooks check-only. `--no-verify` forbidden.
+Target: index-snapshot G1+L1; stdin push-ref L2+G2. Hooks check-only. `--no-verify` forbidden.
 
 ## Resources / Isolation
 
-No Cloudflare Worker. Example E2E uses local app servers. Do not store provider tokens in the repo.
+No Cloudflare Worker and no SQLite. Example E2E: next-app `PORT` (default 3100); vite-app mock 5174 + dev 5173. Do not store `TEST_ANTHROPIC_API_KEY`.
 
 ## Operations / Release
 
