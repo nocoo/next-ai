@@ -56,7 +56,7 @@ bun run test
 bun run test:coverage
 ```
 
-Vitest checks core library logic; example Playwright journeys verify React UI. Optional `bun run test:integration` calls a real model service only when `TEST_ANTHROPIC_API_KEY` is supplied. Normal local tests need no such credential. Each example README documents its test setup.
+Vitest checks core library logic; example Playwright journeys verify React UI. Optional `bun run test:integration` calls a real model service only when `TEST_ANTHROPIC_API_KEY` is supplied. Normal local tests need no such credential. Each example provides its start/test scripts in package.json and its server setup in the Playwright configuration.
 
 ## Stack
 
@@ -71,7 +71,7 @@ Vitest checks core library logic; example Playwright journeys verify React UI. O
 ## Documentation
 
 - [Full integration and API guide](integration.md).
-- [Next.js example](../examples/next-app/README.md) and [Vite example](../examples/vite-app/README.md).
+- [Next.js example](../examples/next-app/) and [Vite example](../examples/vite-app/).
 - [Public types](../src/core/types.ts) and [built-in provider configuration](../src/core/providers.ts).
 
 ## License

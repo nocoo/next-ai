@@ -56,7 +56,7 @@ bun run test
 bun run test:coverage
 ```
 
-Vitest 检查核心库逻辑；React 界面通过示例项目的 Playwright 流程验证。可选 `bun run test:integration` 仅在提供 `TEST_ANTHROPIC_API_KEY` 时调用真实模型服务，常规本地测试不需要该凭据。示例测试的启动方法见各示例 README。
+Vitest 检查核心库逻辑；React 界面通过示例项目的 Playwright 流程验证。可选 `bun run test:integration` 仅在提供 `TEST_ANTHROPIC_API_KEY` 时调用真实模型服务，常规本地测试不需要该凭据。示例的启动和测试命令见各自 `package.json` 与 Playwright 配置。
 
 ## 技术栈
 
@@ -71,7 +71,7 @@ Vitest 检查核心库逻辑；React 界面通过示例项目的 Playwright 流�
 ## 文档
 
 - [完整集成与 API 说明](docs/integration.md)。
-- [Next.js 示例](examples/next-app/README.md)与[Vite 示例](examples/vite-app/README.md)。
+- [Next.js 示例](examples/next-app/)与[Vite 示例](examples/vite-app/)。
 - [公共类型](src/core/types.ts)与[内置服务配置](src/core/providers.ts)。
 
 ## 许可证
