@@ -65,7 +65,7 @@
     "ai": "^7.0.2"
   },
   "overrides": {
-    "@ai-sdk/provider-utils": "5.0.1",
+    "@ai-sdk/provider-utils": "5.0.53",
     "esbuild": ">=0.28.1",
     "nanoid": ">=3.3.18",
     "postcss": ">=8.5.23",
