@@ -1,6 +1,6 @@
 {
   "name": "@nocoo/next-ai",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Multi-provider AI integration for Next.js",
   "type": "module",
   "exports": {
@@ -60,12 +60,14 @@
     }
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^4.0.0",
-    "@ai-sdk/openai": "^4.0.0",
-    "ai": "^7.0.2"
+    "@ai-sdk/anthropic": "4.0.79",
+    "@ai-sdk/openai": "4.0.92",
+    "ai": "7.0.138"
   },
   "overrides": {
-    "@ai-sdk/provider-utils": "5.0.1",
+    "@ai-sdk/provider": "4.0.27",
+    "@ai-sdk/provider-utils": "5.0.59",
+    "source-map-js": "^1.2.2",
     "esbuild": ">=0.28.1",
     "nanoid": ">=3.3.18",
     "postcss": ">=8.5.23",
@@ -73,15 +75,15 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
-    "@types/bun": "^1.2.5",
-    "@types/react": "^19.0.0",
-    "@vitest/coverage-v8": "5.0.1",
+    "@types/bun": "1.4.3",
+    "@types/react": "19.3.0",
+    "@vitest/coverage-v8": "5.0.4",
     "husky": "^9.0.0",
-    "react": "^19.0.0",
-    "tailwindcss": "^4.0.0",
+    "react": "19.3.0",
+    "tailwindcss": "4.3.3",
     "tsup": "^8.4.0",
     "typescript": "^5.7.3",
-    "vitest": "5.0.1"
+    "vitest": "5.0.4"
   },
   "keywords": ["ai", "llm", "anthropic", "openai", "next.js", "react"],
   "author": "nocoo",
