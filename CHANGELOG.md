@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.1] - 2026-10-13
+
+### Changed
+
+- Upgrade the Next.js example from 15.5.15 to exactly 16.3.8, retaining React 19.2.5 and using webpack for Bun's local SDK links.
+- Align the example's TypeScript JSX runtime and generated development types with Next.js 16.
+- Include unreleased changes since v0.2.1: AI SDK 7 / provider SDK 4, Anthropic-compatible bearer authentication, Next.js and Vite browser examples, Vitest coverage, shared CI, dependency security overrides and bilingual documentation.
+
 ## [0.2.1] - 2026-04-18
 
 ### Added
