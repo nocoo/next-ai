@@ -74,7 +74,9 @@ examples/
 
 ### 2.1 next-app
 
-- **Next.js 15 App Router** project, React 19, TypeScript.
+- **Next.js 16.3.8 App Router** project, React 19, TypeScript.
+- Development and production use webpack because Turbopack cannot parse
+  Bun's per-file symlinks for the local `file:../../` SDK dependency.
 - `app/layout.tsx` — root layout. Injects CSS variables produced by
   `generateCssVariables("light")` (and optionally `generateCssVariables("dark")`
   scoped under a `.dark` selector) into a `<style>` tag in `<head>`.
