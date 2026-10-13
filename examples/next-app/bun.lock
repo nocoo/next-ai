@@ -188,7 +188,7 @@
 
     "@next/swc-win32-x64-msvc": ["@next/swc-win32-x64-msvc@16.3.8", "", { "os": "win32", "cpu": "x64" }, "sha512-WcTlaKt/TWkh5kUjdJcUmB1XgZ+1c6fz4Y9fDHL73YNSdGaUWjceeWrrlwF0nv19iABYWC4iAq1oX1w4Bn0vfg=="],
 
-    "@nocoo/next-ai": ["@nocoo/next-ai@file:../..", { "dependencies": { "@ai-sdk/anthropic": "4.0.79", "@ai-sdk/openai": "4.0.92", "ai": "7.0.138" }, "devDependencies": { "@biomejs/biome": "^1.9.0", "@types/bun": "1.4.3", "@types/react": "19.3.0", "husky": "^9.0.0", "react": "19.3.0", "tailwindcss": "^4.0.0", "tsup": "^8.4.0", "typescript": "^5.7.3" }, "peerDependencies": { "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0", "server-only": "^0.0.1", "tailwindcss": "^3.4.0 || ^4.0.0" }, "optionalPeers": ["react", "react-dom", "server-only", "tailwindcss"] }],
+    "@nocoo/next-ai": ["@nocoo/next-ai@file:../..", { "dependencies": { "@ai-sdk/anthropic": "4.0.79", "@ai-sdk/openai": "4.0.92", "ai": "7.0.138" }, "devDependencies": { "@biomejs/biome": "^1.9.0", "@types/bun": "1.4.3", "@types/react": "19.3.0", "husky": "^9.0.0", "react": "19.3.0", "tailwindcss": "4.3.3", "tsup": "^8.4.0", "typescript": "^5.7.3" }, "peerDependencies": { "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0", "server-only": "^0.0.1", "tailwindcss": "^3.4.0 || ^4.0.0" }, "optionalPeers": ["react", "react-dom", "server-only", "tailwindcss"] }],
 
     "@nodelib/fs.scandir": ["@nodelib/fs.scandir@2.1.5", "", { "dependencies": { "@nodelib/fs.stat": "2.0.5", "run-parallel": "^1.1.9" } }, "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g=="],
 
@@ -500,7 +500,7 @@
 
     "zod": ["zod@4.3.6", "", {}, "sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg=="],
 
-    "@nocoo/next-ai/tailwindcss": ["tailwindcss@4.2.4", "", {}, "sha512-HhKppgO81FQof5m6TEnuBWCZGgfRAWbaeOaGT00KOy/Pf/j6oUihdvBpA7ltCeAvZpFhW3j0PTclkxsd4IXYDA=="],
+    "@nocoo/next-ai/tailwindcss": ["tailwindcss@4.3.3", "", {}, "sha512-gOhV3P7ufE62QDGg1zVaTgCR+EtPv92k2nIhVcVKcLmxT1sUBsQGhnZj175j+MqRt4zLF7ic+sCYjfhxMxj7YQ=="],
 
     "chokidar/glob-parent": ["glob-parent@5.1.2", "", { "dependencies": { "is-glob": "^4.0.1" } }, "sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow=="],
 
