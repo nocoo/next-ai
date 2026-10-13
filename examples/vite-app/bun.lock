@@ -12,7 +12,7 @@
       "devDependencies": {
         "@playwright/test": "1.63.0",
         "@types/node": "^22.0.0",
-        "@types/react": "^19.0.0",
+        "@types/react": "19.3.0",
         "@types/react-dom": "^19.0.0",
         "@vitejs/plugin-react": "^4.3.0",
         "autoprefixer": "^10.4.20",
@@ -154,7 +154,7 @@
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
 
-    "@nocoo/next-ai": ["@nocoo/next-ai@file:../..", { "dependencies": { "@ai-sdk/anthropic": "4.0.79", "@ai-sdk/openai": "4.0.92", "ai": "7.0.138" }, "devDependencies": { "@biomejs/biome": "^1.9.0", "@types/bun": "1.4.3", "@types/react": "^19.0.0", "husky": "^9.0.0", "react": "^19.0.0", "tailwindcss": "^4.0.0", "tsup": "^8.4.0", "typescript": "^5.7.3" }, "peerDependencies": { "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0", "server-only": "^0.0.1", "tailwindcss": "^3.4.0 || ^4.0.0" }, "optionalPeers": ["react", "react-dom", "server-only", "tailwindcss"] }],
+    "@nocoo/next-ai": ["@nocoo/next-ai@file:../..", { "dependencies": { "@ai-sdk/anthropic": "4.0.79", "@ai-sdk/openai": "4.0.92", "ai": "7.0.138" }, "devDependencies": { "@biomejs/biome": "^1.9.0", "@types/bun": "1.4.3", "@types/react": "19.3.0", "husky": "^9.0.0", "react": "^19.0.0", "tailwindcss": "^4.0.0", "tsup": "^8.4.0", "typescript": "^5.7.3" }, "peerDependencies": { "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0", "server-only": "^0.0.1", "tailwindcss": "^3.4.0 || ^4.0.0" }, "optionalPeers": ["react", "react-dom", "server-only", "tailwindcss"] }],
 
     "@nodelib/fs.scandir": ["@nodelib/fs.scandir@2.1.5", "", { "dependencies": { "@nodelib/fs.stat": "2.0.5", "run-parallel": "^1.1.9" } }, "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g=="],
 
@@ -234,7 +234,7 @@
 
     "@types/node": ["@types/node@22.19.17", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-wGdMcf+vPYM6jikpS/qhg6WiqSV/OhG+jeeHT/KlVqxYfD40iYJf9/AE1uQxVWFvU7MipKRkRv8NSHiCGgPr8Q=="],
 
-    "@types/react": ["@types/react@19.2.14", "", { "dependencies": { "csstype": "^3.2.2" } }, "sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w=="],
+    "@types/react": ["@types/react@19.3.0", "", { "dependencies": { "csstype": "^3.2.2" } }, "sha512-N0rFCuH9YoxG9/m61l9MfpJKfmLOVU0em7ipIz6TRgSSkvReLB9vL85GB+yr8Bs5leqpvg96JSwF4ZS1s4viQg=="],
 
     "@types/react-dom": ["@types/react-dom@19.2.3", "", { "peerDependencies": { "@types/react": "^19.2.0" } }, "sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ=="],
 
