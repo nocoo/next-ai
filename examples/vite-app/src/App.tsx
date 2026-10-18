@@ -8,7 +8,10 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))] p-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-semibold mb-6">AI Settings</h1>
+        <header className="flex items-center gap-3 mb-6">
+          <img src="/logo-64.png" width={32} height={32} alt="next-ai logo" />
+          <h1 className="text-2xl font-semibold">AI Settings</h1>
+        </header>
         <AiConfigProvider adapter={aiAdapter}>
           <AiSettingsPanel onSaveSuccess={() => setSaveCount((c) => c + 1)} />
         </AiConfigProvider>
