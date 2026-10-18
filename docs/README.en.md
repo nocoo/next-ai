@@ -1,6 +1,7 @@
+<p align="center"><img src="../assets/brand/icon-rounded.png" width="128" alt="next-ai logo" /></p>
 <h1 align="center">next-ai</h1>
 <p align="center">Multi-provider integration and settings UI for Next.js, Vite and React.</p>
-<p align="center"><a href="../README.md">简体中文</a></p>
+<p align="center"><a href="https://hexly.ai/projects/next-ai">Hexly project archive</a> · <a href="../README.md">简体中文</a></p>
 
 ## What it does
 
@@ -16,10 +17,10 @@
 
 ## Usage
 
-Requires Node.js 22+. Install the peer dependencies when using the React settings UI:
+Requires Node.js 22.12+ (22.x), 24.x or 26+. Zod is a required peer dependency; the React settings UI also needs React, React DOM and Tailwind CSS:
 
 ```sh
-npm install @nocoo/next-ai
+npm install @nocoo/next-ai zod
 npm install react react-dom tailwindcss
 ```
 
@@ -30,7 +31,11 @@ import { resolveAiConfig, createAiModel } from "@nocoo/next-ai/server";
 
 const apiKey = process.env.AI_API_KEY;
 if (!apiKey) throw new Error("AI_API_KEY is required");
-const config = resolveAiConfig({ provider: "anthropic", apiKey });
+const config = resolveAiConfig({
+  provider: "anthropic",
+  apiKey,
+  model: "claude-sonnet-4-20250514",
+});
 const model = createAiModel(config);
 ```
 
@@ -73,6 +78,7 @@ Vitest checks core library logic; example Playwright journeys verify React UI. O
 - [Full integration and API guide](integration.md).
 - [Next.js example](../examples/next-app/) and [Vite example](../examples/vite-app/).
 - [Public types](../src/core/types.ts) and [built-in provider configuration](../src/core/providers.ts).
+- [Brand assets, example app icons and usage](../assets/brand/README.md).
 
 ## License
 
