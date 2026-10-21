@@ -77,13 +77,13 @@
     "@biomejs/biome": "^1.9.0",
     "@types/bun": "1.4.3",
     "@types/react": "19.3.0",
-    "@vitest/coverage-v8": "5.0.4",
+    "@vitest/coverage-v8": "5.0.5",
     "husky": "^9.0.0",
     "react": "19.3.1",
     "tailwindcss": "4.3.3",
     "tsup": "^8.4.0",
     "typescript": "^5.7.3",
-    "vitest": "5.0.4"
+    "vitest": "5.0.5"
   },
   "keywords": ["ai", "llm", "anthropic", "openai", "next.js", "react"],
   "author": "nocoo",
