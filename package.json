@@ -62,7 +62,7 @@
   "dependencies": {
     "@ai-sdk/anthropic": "4.0.79",
     "@ai-sdk/openai": "4.0.98",
-    "ai": "7.0.138"
+    "ai": "7.0.147"
   },
   "overrides": {
     "@ai-sdk/provider": "4.0.27",
