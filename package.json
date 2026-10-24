@@ -62,11 +62,11 @@
   "dependencies": {
     "@ai-sdk/anthropic": "4.0.87",
     "@ai-sdk/openai": "4.0.101",
-    "ai": "7.0.147"
+    "ai": "7.0.152"
   },
   "overrides": {
-    "@ai-sdk/provider": "4.0.27",
-    "@ai-sdk/provider-utils": "5.0.59",
+    "@ai-sdk/provider": "4.0.33",
+    "@ai-sdk/provider-utils": "5.0.67",
     "source-map-js": "^1.2.2",
     "esbuild": ">=0.28.1",
     "nanoid": ">=3.3.18",
