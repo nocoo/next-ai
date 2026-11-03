@@ -1,6 +1,6 @@
 {
   "name": "@nocoo/next-ai",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "Multi-provider AI integration for Next.js",
   "type": "module",
   "exports": {
@@ -60,13 +60,13 @@
     }
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "4.0.87",
-    "@ai-sdk/openai": "4.0.101",
-    "ai": "7.0.152"
+    "@ai-sdk/anthropic": "4.0.94",
+    "@ai-sdk/openai": "4.0.106",
+    "ai": "7.0.159"
   },
   "overrides": {
-    "@ai-sdk/provider": "4.0.33",
-    "@ai-sdk/provider-utils": "5.0.67",
+    "@ai-sdk/provider": "4.0.35",
+    "@ai-sdk/provider-utils": "5.0.72",
     "source-map-js": "^1.2.2",
     "esbuild": ">=0.28.1",
     "nanoid": ">=3.3.18",
