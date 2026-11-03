@@ -65,8 +65,8 @@
     "ai": "7.0.152"
   },
   "overrides": {
-    "@ai-sdk/provider": "4.0.33",
-    "@ai-sdk/provider-utils": "5.0.67",
+    "@ai-sdk/provider": "4.0.35",
+    "@ai-sdk/provider-utils": "5.0.72",
     "source-map-js": "^1.2.2",
     "esbuild": ">=0.28.1",
     "nanoid": ">=3.3.18",
