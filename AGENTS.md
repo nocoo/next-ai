@@ -43,7 +43,7 @@ Statuses: `enforced` | `planned` | `manual` | `N/A`.
 
 | Dimension | Required proof | Status | Evidence |
 |---|---|---|---|
-| L1 pre-commit quality | Four metrics ≥ 95% on library `src/**` excluding `src/react/**`, no skipped/focused tests, strict types and check-only lint with zero errors/warnings | planned (library-scope subchecks enforced) | `vitest.config.ts` 95; pre-commit `lint`+`typecheck`+`test:coverage`; CI same — these run on the working tree, so index-snapshot, <30s and rejection evidence are missing. React/UI unit tests **planned**, keeping complete unified L1 planned even for the library lane |
+| L1 pre-commit quality | Four metrics ≥ 95% on library `src/**` excluding `src/react/**`, no skipped/focused tests, strict types and check-only lint with zero errors/warnings | enforced (library scope; React UI remains E2E/L3) | Husky→`git checkout-index` snapshot→`typecheck`→`lint` (`biome --error-on-warnings`)→`test:coverage` (Vitest v8, 95%×4). Staged `package.json`/`bun.lock` must match installed copies; snapshot caches under `.cache/`. React `src/react/**` stays excluded by design (`vitest.config.ts`). Last warm snapshot gate on maintainer machine: four metrics 100%, wall **~3s**; negative probe: staged lint break with unstaged fix rejected |
 | L2 API | Real HTTP against a local app, 100% surface | planned | `__tests__/integration` is remote Anthropic via `TEST_ANTHROPIC_API_KEY`; pre-push `\|\| true` |
 | L3 UI path | Playwright on example apps | enforced | CI `e2e-examples` next-app (`PORT` default 3100) / vite-app (5173+5174 mock) |
 | G2 security | osv-scanner + gitleaks; missing binary fails | enforced | pre-push `gate:security`; CI quality.yml default security |
@@ -54,10 +54,10 @@ Statuses: `enforced` | `planned` | `manual` | `N/A`.
 
 | Hook | Verifies | Budget | Runs |
 |---|---|---|---|
-| pre-commit | working-tree lint, typecheck, `test:coverage` (not index snapshot) | target <30s (unmeasured) | unified-L1 subchecks, library scope |
+| pre-commit | index-snapshot `typecheck`, `lint`, `test:coverage`; staged lockfiles must match install | target <30s (warm **~3s** measured) | unified-L1 subchecks, library scope |
 | pre-push | working-tree `test:integration` (`\|\| true`); `gate-security` on lockfile + `gitleaks detect` (not stdin refs) | target <3min (unmeasured) | G2; not a failing L2 |
 
-Target: index-snapshot unified L1; stdin push-ref L2+G2. Hooks check-only. `--no-verify` forbidden.
+Current pre-commit materialises the Git index (`git checkout-index --all`), symlinks worktree `node_modules`, then runs check-only `typecheck`, `lint`, and `test:coverage` inside the snapshot; owned temp dirs are removed on exit or signal. Target: index-snapshot unified L1 <30s; stdin push-ref L2+G2 <3min. Hooks check-only. `--no-verify` forbidden.
 
 ## Resources and isolation
 
