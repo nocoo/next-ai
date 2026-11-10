@@ -21,7 +21,9 @@
       "import": "./dist/react.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=22"
   },
@@ -76,7 +78,7 @@
     "zod": "^4.6.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.0",
+    "@biomejs/biome": "2.6.6",
     "@types/bun": "1.4.4",
     "@types/react": "19.3.0",
     "@vitest/coverage-v8": "5.1.0",
@@ -87,7 +89,14 @@
     "typescript": "^5.7.3",
     "vitest": "5.1.0"
   },
-  "keywords": ["ai", "llm", "anthropic", "openai", "next.js", "react"],
+  "keywords": [
+    "ai",
+    "llm",
+    "anthropic",
+    "openai",
+    "next.js",
+    "react"
+  ],
   "author": "nocoo",
   "license": "MIT",
   "repository": {

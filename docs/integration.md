@@ -83,7 +83,11 @@ Handle test connection requests, supporting both new API keys and stored keys:
 
 ```typescript
 // app/api/settings/ai/test/route.ts
-import { validateTestConfig, resolveAiConfig, createAiModel } from "@nocoo/next-ai/server";
+import {
+  validateTestConfig,
+  resolveAiConfig,
+  createAiModel,
+} from "@nocoo/next-ai/server";
 import { generateText } from "ai";
 import type { AiTestConfig } from "@nocoo/next-ai";
 
@@ -95,7 +99,7 @@ export async function POST(req: Request) {
   if (errors.length > 0) {
     return Response.json({
       success: false,
-      error: errors.map(e => e.message).join("; "),
+      error: errors.map((e) => e.message).join("; "),
     });
   }
 
@@ -134,21 +138,23 @@ export async function POST(req: Request) {
 
 ### Entry Points
 
-| Import Path | Contents | Environment |
-|-------------|----------|-------------|
-| `@nocoo/next-ai` | Types, constants, registry, utilities | Universal |
-| `@nocoo/next-ai/server` | AI client, helpers, config resolvers | Server (universal) |
+| Import Path                  | Contents                                   | Environment           |
+| ---------------------------- | ------------------------------------------ | --------------------- |
+| `@nocoo/next-ai`             | Types, constants, registry, utilities      | Universal             |
+| `@nocoo/next-ai/server`      | AI client, helpers, config resolvers       | Server (universal)    |
 | `@nocoo/next-ai/server-next` | Same as `/server` with `server-only` guard | Server (Next.js only) |
-| `@nocoo/next-ai/react` | Components, hooks, context | Client |
+| `@nocoo/next-ai/react`       | Components, hooks, context                 | Client                |
 
 ### Choosing a Server Entry Point
 
 **Use `/server`** (recommended for most projects):
+
 - Works with **Vite**, **vinext**, and other non-Next.js frameworks
 - Works with **Next.js** (but without client-import protection)
 - No additional dependencies required
 
 **Use `/server-next`** (strict mode for Next.js):
+
 - Adds `server-only` protection to prevent accidental client-side imports
 - Only works in **Next.js App Router** projects
 - Requires `server-only` as a peer dependency: `npm install server-only`
@@ -163,13 +169,13 @@ import { resolveAiConfig, createAiModel } from "@nocoo/next-ai/server-next";
 
 ### Built-in Providers
 
-| Provider | ID | SDK Type | Default Model |
-|----------|-----|----------|---------------|
-| Anthropic | `anthropic` | anthropic | claude-sonnet-4-20250514 |
-| MiniMax | `minimax` | anthropic | MiniMax-M2.5 |
-| GLM (Zhipu) | `glm` | anthropic | glm-5 |
-| AIHubMix | `aihubmix` | openai | gpt-4o-mini |
-| Custom | `custom` | configurable | configurable |
+| Provider    | ID          | SDK Type     | Default Model            |
+| ----------- | ----------- | ------------ | ------------------------ |
+| Anthropic   | `anthropic` | anthropic    | claude-sonnet-4-20250514 |
+| MiniMax     | `minimax`   | anthropic    | MiniMax-M2.5             |
+| GLM (Zhipu) | `glm`       | anthropic    | glm-5                    |
+| AIHubMix    | `aihubmix`  | openai       | gpt-4o-mini              |
+| Custom      | `custom`    | configurable | configurable             |
 
 ### Custom Provider Registration
 
@@ -210,9 +216,7 @@ templates.register({
     { id: "role", label: "Role", content: "You are a productivity analyst." },
     { id: "task", label: "Task", content: "Analyze data for {{date}}." },
   ],
-  variables: [
-    { key: "date", label: "Date", required: true },
-  ],
+  variables: [{ key: "date", label: "Date", required: true }],
 });
 
 // Build prompt with variables
@@ -223,7 +227,7 @@ const prompt = templates.build("daily-analysis", { date: "2024-01-15" });
 const customPrompt = templates.build(
   "daily-analysis",
   { date: "2024-01-15" },
-  { role: "You are an expert analyst with 10 years experience." }
+  { role: "You are an expert analyst with 10 years experience." },
 );
 ```
 
@@ -232,7 +236,12 @@ const customPrompt = templates.build(
 High-level AI helpers for common use cases:
 
 ```typescript
-import { aiComplete, aiChat, aiStream, aiCompleteWithRetry } from "@nocoo/next-ai/server";
+import {
+  aiComplete,
+  aiChat,
+  aiStream,
+  aiCompleteWithRetry,
+} from "@nocoo/next-ai/server";
 
 // Simple completion
 const result = await aiComplete("Your prompt", {
@@ -243,11 +252,14 @@ const result = await aiComplete("Your prompt", {
 console.log(result.text, result.usage, result.durationMs);
 
 // Multi-turn chat
-const chatResult = await aiChat([
-  { role: "user", content: "Hello" },
-  { role: "assistant", content: "Hi!" },
-  { role: "user", content: "How are you?" },
-], { settings: userSettings });
+const chatResult = await aiChat(
+  [
+    { role: "user", content: "Hello" },
+    { role: "assistant", content: "Hi!" },
+    { role: "user", content: "How are you?" },
+  ],
+  { settings: userSettings },
+);
 
 // Streaming
 const stream = await aiStream("Your prompt", { settings: userSettings });
@@ -273,7 +285,7 @@ Full settings panel with all configuration options:
   onTestSuccess={(result) => {}}
   onTestError={(error) => {}}
   hideTestButton={false}
-/>
+/>;
 ```
 
 #### Individual Components
@@ -299,7 +311,11 @@ import {
 ### Hooks
 
 ```typescript
-import { useAiSettings, useAiTest, useProviderRegistry } from "@nocoo/next-ai/react";
+import {
+  useAiSettings,
+  useAiTest,
+  useProviderRegistry,
+} from "@nocoo/next-ai/react";
 
 // Settings management
 const { settings, loading, saving, save, reload } = useAiSettings();

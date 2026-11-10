@@ -1,8 +1,8 @@
 import {
   type APIRequestContext,
-  type Page,
   test as base,
   expect,
+  type Page,
 } from "@playwright/test";
 
 export const test = base.extend<{

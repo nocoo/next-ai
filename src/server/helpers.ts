@@ -1,4 +1,4 @@
-import { type ModelMessage, generateText, streamText } from "ai";
+import { generateText, type ModelMessage, streamText } from "ai";
 import { resolveAiConfig } from "../core/config";
 import type { AiSettingsInput } from "../core/types";
 import { createAiModel } from "./client";
