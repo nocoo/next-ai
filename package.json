@@ -60,13 +60,13 @@
     }
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "4.0.94",
+    "@ai-sdk/anthropic": "4.0.99",
     "@ai-sdk/openai": "4.0.106",
     "ai": "7.0.159"
   },
   "overrides": {
-    "@ai-sdk/provider": "4.0.35",
-    "@ai-sdk/provider-utils": "5.0.72",
+    "@ai-sdk/provider": "4.0.37",
+    "@ai-sdk/provider-utils": "5.0.76",
     "source-map-js": "^1.2.2",
     "esbuild": ">=0.28.1",
     "nanoid": ">=3.3.18",
