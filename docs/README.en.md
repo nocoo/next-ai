@@ -65,13 +65,13 @@ Vitest checks core library logic; example Playwright journeys verify React UI. O
 
 ## Stack
 
-| Technology | Role |
-| --- | --- |
-| TypeScript, tsup | Types and package builds |
-| Vercel AI SDK | Provider adapters and model calls |
-| React, Tailwind CSS | Settings UI |
-| Bun, Biome | Dependencies and static checks |
-| Vitest, Playwright | Core logic and example UI tests |
+| Technology          | Role                              |
+| ------------------- | --------------------------------- |
+| TypeScript, tsup    | Types and package builds          |
+| Vercel AI SDK       | Provider adapters and model calls |
+| React, Tailwind CSS | Settings UI                       |
+| Bun, Biome          | Dependencies and static checks    |
+| Vitest, Playwright  | Core logic and example UI tests   |
 
 ## Documentation
 

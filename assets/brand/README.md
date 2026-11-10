@@ -18,13 +18,13 @@
 
 ## Files and roles
 
-| Repository path | Pixels | Role | SHA-256 |
-| --- | --- | --- | --- |
-| `logo.png` | 1024 x 1024 | Canonical transparent foreground; small UI and browser source | `89b0ca07f84c1fb5caaac154ce24add5e58914e9cf33a1adbeece39fd5b032e3` |
-| `assets/brand/icon.png` | 1024 x 1024 | Square presentation; large artwork only | `781403b3b998658f36e6f7aadcb502e9d0c34724ddf6984701cdbafdb9ca19bc` |
-| `assets/brand/icon-rounded.png` | 1024 x 1024 | Rounded presentation; both README headers at 128 CSS px | `25cc888a0600ca8683f27289385bf3d3ff2d8d11699325aca50451642f11be5c` |
-| `examples/{next-app,vite-app}/public/logo-64.png` | 64 x 64 | Transparent headers rendered at 32 CSS px | `1f7aab7fae3d2c2b3b22383bd0281af1fed54511bdf027034546a53ee8df1380` |
-| `examples/next-app/app/favicon.ico; examples/vite-app/public/favicon.ico` | 16 / 32 / 48 | Transparent browser icons; no tile or extra crop | `77d29f21dd1326ddac80514ac5c4b22779556bb7ebd6c94c19e5898d99ea50ea` |
+| Repository path                                                           | Pixels       | Role                                                          | SHA-256                                                            |
+| ------------------------------------------------------------------------- | ------------ | ------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `logo.png`                                                                | 1024 x 1024  | Canonical transparent foreground; small UI and browser source | `89b0ca07f84c1fb5caaac154ce24add5e58914e9cf33a1adbeece39fd5b032e3` |
+| `assets/brand/icon.png`                                                   | 1024 x 1024  | Square presentation; large artwork only                       | `781403b3b998658f36e6f7aadcb502e9d0c34724ddf6984701cdbafdb9ca19bc` |
+| `assets/brand/icon-rounded.png`                                           | 1024 x 1024  | Rounded presentation; both README headers at 128 CSS px       | `25cc888a0600ca8683f27289385bf3d3ff2d8d11699325aca50451642f11be5c` |
+| `examples/{next-app,vite-app}/public/logo-64.png`                         | 64 x 64      | Transparent headers rendered at 32 CSS px                     | `1f7aab7fae3d2c2b3b22383bd0281af1fed54511bdf027034546a53ee8df1380` |
+| `examples/next-app/app/favicon.ico; examples/vite-app/public/favicon.ico` | 16 / 32 / 48 | Transparent browser icons; no tile or extra crop              | `77d29f21dd1326ddac80514ac5c4b22779556bb7ebd6c94c19e5898d99ea50ea` |
 
 Use the same transparent foreground on light and dark surfaces. Do not add a
 background tile, corner mask, filter, recoloring or crop to small UI/browser

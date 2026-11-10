@@ -1,45 +1,41 @@
 // Core Types (from types.ts)
+
+// Config
+export {
+  isValidProvider,
+  resolveAiConfig,
+  validateAiConfig,
+  validateTestConfig,
+} from "./core/config";
+// Constants
+export { BUILTIN_PROVIDERS, CUSTOM_PROVIDER_INFO } from "./core/providers";
+// Registry
+export { AiProviderRegistry, defaultRegistry } from "./core/registry";
+// Template Types (from templates.ts)
 export type {
-  SdkType,
-  AuthType,
-  BuiltinProvider,
+  PromptSection,
+  PromptTemplate,
+  TemplateVariable,
+} from "./core/templates";
+export { PromptTemplateRegistry } from "./core/templates";
+export type {
+  AiConfig,
+  AiConfigError,
   AiProvider,
   AiProviderInfo,
-  AiConfig,
   AiSettingsInput,
   AiSettingsReadonly,
   AiStorageAdapter,
   AiTestConfig,
   AiTestResult,
-  AiConfigError,
+  AuthType,
+  BuiltinProvider,
+  SdkType,
 } from "./core/types";
-
-// Template Types (from templates.ts)
-export type {
-  TemplateVariable,
-  PromptTemplate,
-  PromptSection,
-} from "./core/templates";
-
-// Constants
-export { BUILTIN_PROVIDERS, CUSTOM_PROVIDER_INFO } from "./core/providers";
-
-// Registry
-export { AiProviderRegistry, defaultRegistry } from "./core/registry";
-export { PromptTemplateRegistry } from "./core/templates";
-
-// Config
-export {
-  resolveAiConfig,
-  validateAiConfig,
-  validateTestConfig,
-  isValidProvider,
-} from "./core/config";
-
+export type { TemplateVariables } from "./core/utils";
 // Utils
 export {
   expandTemplate,
   formatDuration,
   parseJsonResponse,
 } from "./core/utils";
-export type { TemplateVariables } from "./core/utils";

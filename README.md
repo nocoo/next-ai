@@ -65,13 +65,13 @@ Vitest 检查核心库逻辑；React 界面通过示例项目的 Playwright 流�
 
 ## 技术栈
 
-| 技术 | 用途 |
-| --- | --- |
-| TypeScript、tsup | 类型与包构建 |
-| Vercel AI SDK | 模型服务适配与调用 |
-| React、Tailwind CSS | 设置界面 |
-| Bun、Biome | 依赖与静态检查 |
-| Vitest、Playwright | 核心逻辑与示例界面测试 |
+| 技术                | 用途                   |
+| ------------------- | ---------------------- |
+| TypeScript、tsup    | 类型与包构建           |
+| Vercel AI SDK       | 模型服务适配与调用     |
+| React、Tailwind CSS | 设置界面               |
+| Bun、Biome          | 依赖与静态检查         |
+| Vitest、Playwright  | 核心逻辑与示例界面测试 |
 
 ## 文档
 

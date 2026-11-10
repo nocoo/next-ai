@@ -1,5 +1,5 @@
 import { generateText } from "ai";
-import { type Mock, describe, expect, test } from "vitest";
+import { describe, expect, type Mock, test } from "vitest";
 import {
   aiChat,
   aiComplete,

@@ -282,37 +282,37 @@ scenarios against their respective mock APIs.
 
 ### 4.1 `settings-panel.spec.ts` — provider, model, API key, save
 
-| # | Test | Expectation |
-|---|------|-------------|
-| 1 | Default provider on load | Provider select shows `anthropic`. |
-| 2 | Switching provider updates model dropdown | Selecting `aihubmix` repopulates the model `<select>` with that provider's models from the registry (e.g. `gpt-4o-mini`). |
-| 3 | API key field is masked | `<input type="password">` (or equivalent), value is not visible in DOM as plain text. |
-| 4 | "Stored" indicator after save | After saving with a non-empty key, on next load the panel renders the muted helper text "API key is set. Enter a new key to update it." beneath the API key field. |
-| 5 | Save calls PUT and triggers success callback | Network capture asserts `PUT /api/settings/ai` was called once. The panel itself shows no inline save-success badge — assert via the `onSaveSuccess` prop (wire a sentinel DOM node in the host page that flips on callback) and the cleared API key input. |
-| 6 | Reload preserves saved settings | After reload, panel reflects the most recent saved provider/model. |
+| #   | Test                                         | Expectation                                                                                                                                                                                                                                                 |
+| --- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Default provider on load                     | Provider select shows `anthropic`.                                                                                                                                                                                                                          |
+| 2   | Switching provider updates model dropdown    | Selecting `aihubmix` repopulates the model `<select>` with that provider's models from the registry (e.g. `gpt-4o-mini`).                                                                                                                                   |
+| 3   | API key field is masked                      | `<input type="password">` (or equivalent), value is not visible in DOM as plain text.                                                                                                                                                                       |
+| 4   | "Stored" indicator after save                | After saving with a non-empty key, on next load the panel renders the muted helper text "API key is set. Enter a new key to update it." beneath the API key field.                                                                                          |
+| 5   | Save calls PUT and triggers success callback | Network capture asserts `PUT /api/settings/ai` was called once. The panel itself shows no inline save-success badge — assert via the `onSaveSuccess` prop (wire a sentinel DOM node in the host page that flips on callback) and the cleared API key input. |
+| 6   | Reload preserves saved settings              | After reload, panel reflects the most recent saved provider/model.                                                                                                                                                                                          |
 
 ### 4.2 `custom-provider.spec.ts` — custom provider flow
 
-| # | Test | Expectation |
-|---|------|-------------|
-| 1 | Selecting `custom` reveals extra fields | `baseURL` and `sdkType` inputs become visible. |
-| 2 | Custom config persists | Fill `baseURL`, `sdkType`, `model`, `apiKey`; save; reload; `baseURL`, `sdkType`, and `model` are restored from the mock API and the API key shows as "stored" (`hasApiKey` indicator) — the actual `apiKey` value is never returned by GET. |
+| #   | Test                                    | Expectation                                                                                                                                                                                                                                  |
+| --- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Selecting `custom` reveals extra fields | `baseURL` and `sdkType` inputs become visible.                                                                                                                                                                                               |
+| 2   | Custom config persists                  | Fill `baseURL`, `sdkType`, `model`, `apiKey`; save; reload; `baseURL`, `sdkType`, and `model` are restored from the mock API and the API key shows as "stored" (`hasApiKey` indicator) — the actual `apiKey` value is never returned by GET. |
 
 ### 4.3 `test-connection.spec.ts` — connection test
 
-| # | Test | Expectation |
-|---|------|-------------|
-| 1 | Test button calls POST endpoint | Network capture asserts `POST /api/settings/ai/test`. |
-| 2 | Success result displays model | UI renders the green "✓ Connection successful" badge with the returned model name in parentheses (e.g. `(claude-sonnet-4-20250514)`). The panel does not display the provider string in the badge — the model is the only echoed value. |
+| #   | Test                            | Expectation                                                                                                                                                                                                                             |
+| --- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Test button calls POST endpoint | Network capture asserts `POST /api/settings/ai/test`.                                                                                                                                                                                   |
+| 2   | Success result displays model   | UI renders the green "✓ Connection successful" badge with the returned model name in parentheses (e.g. `(claude-sonnet-4-20250514)`). The panel does not display the provider string in the badge — the model is the only echoed value. |
 
 ### 4.4 Optional: dark mode
 
 If the panel responds to a `prefers-color-scheme` or class-based dark
 mode trigger, add a `dark-mode.spec.ts`:
 
-| # | Test | Expectation |
-|---|------|-------------|
-| 1 | Dark class swaps tokens | Toggling the dark class on `<html>` causes the computed unprefixed CSS variables emitted by `generateCssVariables` (e.g. `--background`, `--card-foreground`, `--border`) to change between the `light` and `dark` token sets. |
+| #   | Test                    | Expectation                                                                                                                                                                                                                    |
+| --- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | Dark class swaps tokens | Toggling the dark class on `<html>` causes the computed unprefixed CSS variables emitted by `generateCssVariables` (e.g. `--background`, `--card-foreground`, `--border`) to change between the `light` and `dark` token sets. |
 
 ### 4.5 Sample Playwright config
 

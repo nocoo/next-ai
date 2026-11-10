@@ -1,4 +1,4 @@
-import { type TemplateVariables, expandTemplate } from "./utils";
+import { expandTemplate, type TemplateVariables } from "./utils";
 
 /** 模板变量定义 */
 export interface TemplateVariable {

@@ -1,8 +1,8 @@
 "use client";
 
-import { aiAdapter } from "@/lib/ai-adapter";
 import { AiConfigProvider, AiSettingsPanel } from "@nocoo/next-ai/react";
 import { useState } from "react";
+import { aiAdapter } from "@/lib/ai-adapter";
 
 export default function AiSettingsPage() {
   const [saveCount, setSaveCount] = useState(0);
