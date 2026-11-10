@@ -82,7 +82,7 @@
     "@vitest/coverage-v8": "5.1.0",
     "husky": "^9.0.0",
     "react": "19.3.1",
-    "tailwindcss": "4.3.3",
+    "tailwindcss": "4.3.5",
     "tsup": "^8.4.0",
     "typescript": "^5.7.3",
     "vitest": "5.1.0"
