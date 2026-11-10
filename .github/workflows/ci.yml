@@ -1,3 +1,5 @@
+# CI slot standard v1 (nocoo/base-ci docs/slots.md): impl S1, S2, S3, G1, G2, B1, L1, L3, Z1 via quality.yml;
+# na L1.5, L2; todo P1 in slot-status. nocoo/base-ci v2026.12: top-level slot jobs, L3 browsers/artifacts.
 name: CI
 
 on:
@@ -7,34 +9,47 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   quality:
-    uses: nocoo/base-ci/.github/workflows/quality.yml@633a5545fcfec91b688840650d4edf3e9cc1abbd # v2026.10
+    uses: nocoo/base-ci/.github/workflows/quality.yml@1ea10ecab22b72512399485391603fe03a161016 # v2026.12
     with:
       runtime-version: "1.4.2"
-      prepare-command: "bun run build"
-      test-command: "bun run test:coverage"
-      coverage-path: "coverage"
-      typecheck-command: "bun run typecheck"
-
-  e2e-examples:
-    needs: quality
-    strategy:
-      fail-fast: false
-      matrix:
-        app: [next-app, vite-app]
-    uses: nocoo/base-ci/.github/workflows/test-job.yml@633a5545fcfec91b688840650d4edf3e9cc1abbd # v2026.10
-    with:
-      runtime-version: "1.4.2"
-      install-policy: "blocked"
-      pre-command: |
+      install-policy: blocked
+      typecheck-command: bun run typecheck
+      test-command: bun run test:coverage
+      coverage-path: coverage
+      gitleaks-config: .gitleaks.toml
+      build: true
+      build-command: bun run build
+      workflow-lint: true
+      workflow-lint-yamllint: true
+      l3: true
+      l3-browser: chromium
+      l3-prepare-command: |
         bun run build
-        cd "examples/${{ matrix.app }}"
-        bun install --frozen-lockfile --ignore-scripts
-      browser: "chromium"
-      browser-working-directory: examples/${{ matrix.app }}
-      command: cd "examples/${{ matrix.app }}" && bun run test:e2e
-      timeout-minutes: 15
-      artifact-name: playwright-report-${{ matrix.app }}
-      artifact-path: examples/${{ matrix.app }}/playwright-report
-      artifact-retention-days: 7
+        (cd examples/next-app && bun install --frozen-lockfile --ignore-scripts && bunx playwright install --with-deps chromium)
+        (cd examples/vite-app && bun install --frozen-lockfile --ignore-scripts && bunx playwright install --with-deps chromium)
+      l3-command: |
+        (cd examples/next-app && bun run test:e2e)
+        (cd examples/vite-app && bun run test:e2e)
+      l3-artifact-name: playwright-reports
+      l3-artifact-path: |
+        examples/next-app/playwright-report
+        examples/vite-app/playwright-report
+      l3-artifact-retention-days: 7
+      slot-status: >-
+        {"S1": {"status": "impl"},
+        "S2": {"status": "impl"},
+        "S3": {"status": "impl"},
+        "G1": {"status": "impl"},
+        "G2": {"status": "impl"},
+        "B1": {"status": "impl"},
+        "L1": {"status": "impl"},
+        "L1.5": {"status": "na", "reason": "非 Cloudflare Worker 项目，无 workerd / vitest-pool-workers 运行时套件"},
+        "L2": {"status": "na", "reason": "无 CI 内起服 HTTP API E2E；Anthropic 集成测仅可选 pre-push，且依赖远程 API"},
+        "L3": {"status": "impl"},
+        "P1": {"status": "todo", "reason": "尚未接入 publint / attw 或 ci:package 脚本"},
+        "Z1": {"status": "impl"}}
