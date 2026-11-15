@@ -1,4 +1,4 @@
-# L1: Git index snapshot (6DQ unified L1 incl. former G1 static checks).
+# Git index snapshot checks (S1, S2, L1).
 set -e
 command -v git >/dev/null 2>&1 || {
 	echo "pre-commit: git is required" >&2
