@@ -1,84 +1,54 @@
 # @nocoo/next-ai
 
-Multi-provider AI SDK wrapper (Anthropic / OpenAI-compatible) with React settings UI.
-Profile: cli-library
-Direction: [docs/README.md](docs/README.md). Frameworks must not rewrite this file.
+Multi-provider AI SDK wrapper (Anthropic / OpenAI-compatible) with React settings UI for Next.js, Vite, and vinext.
+Docs: [README.md](README.md) · [Docs Index](docs/README.md) · [Integration](docs/integration.md) · [Examples & E2E](docs/examples/01-examples-e2e.md) · [Retrospective](Retrospective.md)
 
-## Scope and instruction sources
+## Commands
 
-- This file is the only project handbook; nested files do not compete with it. Do not create a `CLAUDE.md` alias or copy.
-- This file is the contract; `.husky/*`, `.github/workflows/ci.yml`, `vitest.config.ts` and `scripts/gate-security.ts` are enforcement. If they disagree, that is a failure — raise enforcement to match this file; never lower the contract to a weaker hook.
-- Human docs: [README.md](README.md) and `docs/**`. Version is `package.json` `"version"` as `1.2.3`, displayed `v1.2.3`. Optional `TEST_ANTHROPIC_API_KEY` env var enables otherwise-skipped integration tests — never commit values. Global machine rules live in the machine `AGENTS.md` and `rules/git-commit.md`.
-- Accidents: [Retrospective.md](Retrospective.md).
+Run from root with TypeScript strict, Bun (`bun.lock`, CI Bun 1.4.2; `engines.node >=22`), Biome, tsup, and Vitest. Layout: `src/{core,server,react}`, `__tests__/{unit,integration}`, `examples/{next-app,vite-app}`, `scripts/gate-security.ts`, `tsup.config.ts`.
 
-## Project invariants
-
-- AI client creation is server-side only (`server-only` / `src/server-next.ts`). Do not move secrets to client components.
-- Storage is adapter-based; this library does not ship a database.
-- `src/react/**` is UI; L1 coverage **excludes** it. React logic is not unit-tested; example Playwright is the UI path, not L1.
-- Integration uses `TEST_ANTHROPIC_API_KEY` only (`skipIf` empty). Do not run live keyed APIs from this handbook. Not isolated L2.
-
-## Setup and commands
-
-TypeScript strict; Bun (`bun.lock`); library for Next.js / Vite / vinext; Biome `--error-on-warnings`; Vitest L1 95% plus optional `test:integration` and Playwright in `examples/*`; no data layer. Layout: `src/{core,react}`, `__tests__/{unit,integration}`, `examples/{next-app,vite-app}`, `scripts/gate-security.ts`, `tsup.config.ts`.
-
-```bash
-bun install
-bun run typecheck           # tsc --noEmit
-bun run lint                # biome check --error-on-warnings .
-bun run build               # tsup
-bun run test:coverage       # vitest unit --coverage (95% four metrics)
-bun run test:integration    # skip unless TEST_ANTHROPIC_API_KEY is set; do not run for docs
-bun run gate:security       # osv-scanner + gitleaks; missing binary fails
-# examples after `bun run build` + per-app `bun install --frozen-lockfile --ignore-scripts`:
-# next-app: webServer `bun run build && PORT=${PORT:-3100} bun run start`
-# vite-app: mock :5174 (`bun run mock`) + Vite :5173 (`bun run dev`) then `bun run test:e2e`
+```sh
+bun install --frozen-lockfile
+bun run typecheck           # S1: tsc --noEmit
+bun run lint                # S2: biome check --error-on-warnings .
+bun run build               # B1: tsup ESM bundles -> dist/
+bun run test:coverage       # L1: Vitest v8 >=95% (4 metrics)
+bun run test:integration    # optional live Anthropic; skips unless TEST_ANTHROPIC_API_KEY is set
+bun run gate:security       # G1+G2: osv-scanner + gitleaks; missing binary fails
 ```
 
-## Testing and quality contract
+Example E2E (`L4`): run `bun run build` at root, then in `examples/next-app` or `examples/vite-app` run `bun install --frozen-lockfile --ignore-scripts` and `bun run test:e2e`.
 
-Quality follows `system1-quality` (v1.3.0) with 12 canonical slots (`impl`, `todo`, `na`) and `nocoo/base-ci` v2026.15 (`777bbe4f9bacab8a91d8c01974480a6ee23d28e0`) in native mode (`quality-slots.yml`).
+## Invariants
 
-| Slot             | Required proof                                                                           | Status            | Evidence                                                                   |
-| ---------------- | ---------------------------------------------------------------------------------------- | ----------------- | -------------------------------------------------------------------------- |
-| S1: Types        | Strict TypeScript (`bun run typecheck`)                                                  | enforced (`impl`) | Husky index snapshot & CI `s1-types`                                       |
-| S2: Lint         | Biome check-only (`bun run lint`), no `.skip`/`.only`                                    | enforced (`impl`) | Husky index snapshot & CI `s2-lint`                                        |
-| S3: Workflow     | `actionlint` + 40-char SHA pinning                                                       | enforced (`impl`) | CI `s3-workflow`                                                           |
-| G1: Secrets      | Gitleaks scan (`.gitleaks.toml`)                                                         | enforced (`impl`) | Pre-push `gate:security` & CI `g1-secrets`                                 |
-| G2: Dependencies | `osv-scanner` on `bun.lock`                                                              | enforced (`impl`) | Pre-push `gate:security` & CI `g2-dependencies`                            |
-| B1: Build        | `bun run build` (tsup)                                                                   | enforced (`impl`) | `prepublishOnly` & CI `b1-build`                                           |
-| L1: Unit         | Vitest v8 (`>=95%` statements/branches/functions/lines on `src/**` excl. `src/react/**`) | enforced (`impl`) | Husky index snapshot (`test:coverage`, warm **~3s**) & CI `l1-unit`        |
-| L2: Runtime      | Cloudflare Worker / workerd runtime suite                                                | N/A (`na`)        | Non-Cloudflare Worker project                                              |
-| L3: Integration  | Local HTTP API integration                                                               | N/A (`na`)        | Remote Anthropic integration (`TEST_ANTHROPIC_API_KEY`) only; not CI-local |
-| L4: E2E          | Playwright on example apps (`next-app` / `vite-app`)                                     | enforced (`impl`) | CI `l4-e2e`                                                                |
-| P1: Package      | `publint` / `attw` or `ci:package`                                                       | planned (`todo`)  | Not yet wired into CI                                                      |
-| Z1: Gate         | Aggregate all `impl` slots & SHA consistency                                             | enforced (`impl`) | CI `z1-gate` (`quality / Z1: Gate`)                                        |
+- Server-only secrets: create AI models only on the server (`./server` or Next.js `./server-next` / `src/server-next.ts` with `server-only`); never move secrets to `./react` client components.
+- Adapter-based & ESM-only: ships no database (`AiStorageAdapter` is consumer-provided) and emits ESM-only exports (`.`, `./server`, `./server-next`, `./react` with `"use client"` banner).
+- Version source: `package.json` `"version"` is authoritative (`1.2.3`, displayed `v1.2.3`).
+- Coverage boundary: `L1` excludes `src/react/**`, `src/react.ts`, `src/server-next.ts`, `src/core/types.ts`, and barrels (`src/index.ts`, `src/server.ts`); React UI is verified by example Playwright E2E.
+- Integration guard: `test:integration` uses `TEST_ANTHROPIC_API_KEY` (`skipIf` empty); skip for docs/routine work, never store keys, and never treat a skip as passing `L2`/`L3`.
+- Clean example reinstalls: local `file:../../` installs in `examples/*` can fail incrementally in Bun (`ENOENT`); move `node_modules` aside and run a fresh frozen install when updating.
+- Release gate: `npm publish` (triggers `prepublishOnly` build) requires explicit authorization, npm maintainer auth, green CI (`quality / Z1: Gate`), and passing example E2E; see [README.md](README.md).
 
-| Hook       | Verifies                                                                                                        | Budget                              | Runs                                |
-| ---------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------------------------------- |
-| pre-commit | index-snapshot `typecheck`, `lint`, `test:coverage`; staged lockfiles must match install                        | target <30s (warm **~3s** measured) | S1, S2, L1 subchecks, library scope |
-| pre-push   | working-tree `test:integration` (`\|\| true`); `gate-security` on lockfile + `gitleaks detect` (not stdin refs) | target <3min (unmeasured)           | G1, G2                              |
+## Quality & Local Gates
 
-Current pre-commit materialises the Git index (`git checkout-index --all`), symlinks worktree `node_modules`, then runs check-only `typecheck`, `lint`, and `test:coverage` inside the snapshot; owned temp dirs are removed on exit or signal. Target: index-snapshot L1 <30s; stdin push-ref G2 <3min. Hooks check-only. `--no-verify` forbidden. CI runs `.github/workflows/ci.yml` -> `./.github/workflows/quality-slots.yml`, gated on `quality / Z1: Gate`.
+Follows `system1-quality`; CI runs `.github/workflows/ci.yml` -> `.github/workflows/quality-slots.yml` (`quality / Z1: Gate` required on `main`). Status vocabulary: `enforced`, `planned`, `manual`, `N/A`.
 
-## Resources and isolation
+- **Exceptions / gaps**: `L2 Runtime` is `N/A` (not a Cloudflare Worker); `L3 Integration` is `N/A` (remote keyed Anthropic only, not CI-local); `P1 Package` is `planned` (`publint`/`attw` not wired).
+- **Enforcement contract**: `.husky/*`, `.github/workflows/quality-slots.yml`, `vitest.config.ts`, and `scripts/gate-security.ts` enforce this file; if they disagree, raise enforcement, never weaken the contract.
+- **Local hooks**: installed via `bun run prepare` (`.husky/`); hooks are check-only and `--no-verify` is forbidden.
+- **pre-commit**: snapshots staged index (`git checkout-index --all`, cleaned on exit), checks `package.json`/`bun.lock` match worktree, symlinks `node_modules`, runs `typecheck`, `lint`, `test:coverage` (`<30s`).
+- **pre-push**: runs working-tree `test:integration || true` and `scripts/gate-security.ts` (`osv-scanner` + `gitleaks detect`; gap: scans working tree instead of stdin push-refs; `<3min` target).
 
-No Cloudflare Worker and no SQLite. Example E2E: next-app `PORT` (default 3100); vite-app mock 5174 + dev 5173. Do not store `TEST_ANTHROPIC_API_KEY`.
+## Resources & Isolation
 
-## Operations / release
+No Cloudflare Worker or SQLite database. Example E2E runs isolated in-memory mock servers (see [01-examples-e2e.md](docs/examples/01-examples-e2e.md)):
 
-- Entry: `npm publish` after `prepublishOnly` build
-- Auth: npm maintainers
-- Before ship: CI quality + example e2e
-- Runbook: README
+| Surface             | Endpoint / Env                                               | Boundary                                                                       |
+| ------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| `examples/next-app` | `PORT` (default `3100`)                                      | `bun run build && PORT=${PORT:-3100} bun run start` via Playwright `webServer` |
+| `examples/vite-app` | Mock `:5174` (`bun run mock`) + Vite `:5173` (`bun run dev`) | In-memory mock API only; no upstream LLM calls                                 |
+| Live integration    | `TEST_ANTHROPIC_API_KEY` (unset by default)                  | Remote Anthropic API; never commit, store, or treat as CI gate                 |
 
 ## Retrospective
 
-| Kind                                  | Where                                |
-| ------------------------------------- | ------------------------------------ |
-| Accident narrative                    | [Retrospective.md](Retrospective.md) |
-| Project-specific rule that will recur | one line here (cap ~10)              |
-| Cross-project lesson                  | nmem / global `AGENTS.md` / `rules/` |
-| Deterministically checkable rule      | hook or test, not prose              |
-
-- Do not treat a skipped `test:integration` as a passing L2 gate.
+Record incident narratives in [Retrospective.md](Retrospective.md); promote recurring project constraints to `Invariants` above and enforceable safeguards to tests/hooks.
