@@ -8,9 +8,9 @@ test("example uses the transparent brand mark and favicon", async ({
   await expect(logo).toBeVisible();
   await expect(logo).toHaveAttribute("src", "/logo-64.png");
   await expect(logo).toHaveCSS("border-radius", "0px");
-  expect(
-    await logo.evaluate((image: HTMLImageElement) => image.naturalWidth),
-  ).toBe(64);
+  await expect
+    .poll(() => logo.evaluate((image: HTMLImageElement) => image.naturalWidth))
+    .toBe(64);
   await expect(page.locator('link[rel="icon"]')).toHaveAttribute(
     "href",
     "/favicon.ico",

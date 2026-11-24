@@ -213,11 +213,10 @@ jobs:
           package-manager: bun
           runtime-version: ${{ env.BUN_VERSION }}
           install-policy: blocked
-      - name: Build SDK and install example dependencies
+      - name: Build SDK and install next-app dependencies
         run: |
           bun run build
           (cd examples/next-app && bun install --frozen-lockfile --ignore-scripts)
-          (cd examples/vite-app && bun install --frozen-lockfile --ignore-scripts)
       - name: Cache Playwright Chromium
         id: playwright-cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -233,7 +232,8 @@ jobs:
       - name: Run Playwright E2E across example apps
         run: |
           (cd examples/next-app && bun run test:e2e)
-          (cd examples/vite-app && bun run test:e2e)
+          rm -rf examples/next-app/node_modules examples/next-app/.next
+          (cd examples/vite-app && bun install --frozen-lockfile --ignore-scripts && bun run test:e2e)
       - name: Upload Playwright reports
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
