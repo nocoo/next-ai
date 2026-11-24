@@ -115,9 +115,6 @@ jobs:
         with:
           persist-credentials: false
       - uses: nocoo/base-ci/.github/actions/setup-security-scanners@6424d395d36a815d931f10e557762eb635d511c0 # v2026.16
-        with:
-          gitleaks: true
-          osv-scanner: false
       - name: Scan checkout for secrets
         run: gitleaks dir . --config .gitleaks.toml --no-banner --redact --log-level error
       - name: Record tested SHA
@@ -136,9 +133,6 @@ jobs:
         with:
           persist-credentials: false
       - uses: nocoo/base-ci/.github/actions/setup-security-scanners@6424d395d36a815d931f10e557762eb635d511c0 # v2026.16
-        with:
-          gitleaks: false
-          osv-scanner: true
       - name: Scan lockfile for dependency vulnerabilities
         run: osv-scanner scan --lockfile=bun.lock
       - name: Record tested SHA
