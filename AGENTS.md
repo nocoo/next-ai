@@ -31,7 +31,7 @@ Example E2E (`L4`): run `bun run build` at root, then in `examples/next-app` or 
 
 ## Quality & Local Gates
 
-Follows `system1-quality`; CI runs `.github/workflows/ci.yml` -> `.github/workflows/quality-slots.yml` (`quality / Z1: Gate` required on `main`). Status vocabulary: `enforced`, `planned`, `manual`, `N/A`.
+Follows `system1-quality`; CI runs `.github/workflows/pipeline.yml` -> `.github/workflows/quality-slots.yml` (`quality / Z1: Gate` required on `main`, pinned `base-ci` `v2026.24`), with no automated CD workflow (local `npm publish` only). Status vocabulary: `enforced`, `planned`, `manual`, `N/A`.
 
 - **Exceptions / gaps**: `L2 Runtime` is `N/A` (not a Cloudflare Worker); `L3 Integration` is `N/A` (remote keyed Anthropic only, not CI-local); `P1 Package` is `planned` (`publint`/`attw` not wired).
 - **Enforcement contract**: `.husky/*`, `.github/workflows/quality-slots.yml`, `vitest.config.ts`, and `scripts/gate-security.ts` enforce this file; if they disagree, raise enforcement, never weaken the contract.
