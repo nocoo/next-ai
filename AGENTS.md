@@ -12,7 +12,7 @@ bun install --frozen-lockfile
 bun run typecheck           # S1: tsc --noEmit
 bun run lint                # S2: biome check --error-on-warnings .
 bun run build               # B1: tsup ESM bundles -> dist/
-bun run test:coverage       # L1: Vitest v8 >=95% (4 metrics)
+bun run test:coverage       # L1: Vitest v8 >=90/85% (st/fn/ln>=90, br>=85)
 bun run test:integration    # optional live Anthropic; skips unless TEST_ANTHROPIC_API_KEY is set
 bun run gate:security       # G1+G2: osv-scanner + gitleaks; missing binary fails
 ```
